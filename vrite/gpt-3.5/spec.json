@@ -1,0 +1,9 @@
+{
+  "name": "gpt-3.5",
+  "displayName": "GPT-3.5",
+  "description": "Integrates OpenAI's GPT-3.5 into the editor",
+  "permissions": [],
+  "runtime": "./src/index.tsx",
+  "icon": "./assets/icon.svg",
+  "iconDark": "./assets/icon-dark.svg"
+}
