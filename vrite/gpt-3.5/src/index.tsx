@@ -5,10 +5,13 @@ import {
   createTemp,
   createFunction,
   createElement,
-  createRuntime
+  createRuntime,
 } from "@vrite/sdk/extensions";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { gfmInputTransformer, gfmOutputTransformer } from "@vrite/sdk/transformers";
+import {
+  gfmInputTransformer,
+  gfmOutputTransformer,
+} from "@vrite/sdk/transformers";
 
 declare global {
   interface Window {
@@ -26,31 +29,36 @@ export default createRuntime({
       blocks: ["paragraph"],
       label: "Generate with GPT",
       view: createView((context) => {
-        const [prompt, setPrompt] = createTemp<string>("");
-        const [includeContext, setIncludeContext] = createTemp<boolean>(false);
+        const [prompt] = createTemp<string>("");
+        const [includeContext] = createTemp<boolean>(false);
         const [loading, setLoading] = createTemp<boolean>(false);
         const generate = createFunction(async () => {
           let content = "";
           let processedPrompt = prompt();
 
           if (includeContext()) {
-            processedPrompt = `"${gfmOutputTransformer(context.content)}"\n\n${prompt()}`;
+            processedPrompt = `"${gfmOutputTransformer(
+              context.content
+            )}"\n\n${prompt()}`;
           }
 
           setLoading(true);
           window.currentRequestController = new AbortController();
-          window.currentRequestController.signal.addEventListener("abort", () => {
-            setLoading(false);
-            // Force refresh
-          });
+          window.currentRequestController.signal.addEventListener(
+            "abort",
+            () => {
+              setLoading(false);
+              // Force refresh
+            }
+          );
           await fetchEventSource("https://extensions.vrite.io/gpt", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Accept": "text/event-stream"
+              Accept: "text/event-stream",
             },
             body: JSON.stringify({
-              prompt: processedPrompt
+              prompt: processedPrompt,
             }),
             signal: window.currentRequestController?.signal,
             async onopen() {
@@ -59,7 +67,10 @@ export default createRuntime({
             onerror(error) {
               setLoading(false);
               // Force refresh
-              context.notify({ text: "Error while generating content", type: "error" });
+              context.notify({
+                text: "Error while generating content",
+                type: "error",
+              });
               throw error;
             },
             onmessage(event) {
@@ -71,7 +82,7 @@ export default createRuntime({
             onclose() {
               setLoading(false);
               context.refreshContent();
-            }
+            },
           });
         });
         const stop = createFunction(() => {
@@ -88,8 +99,13 @@ export default createRuntime({
               textarea={true}
               bind:value={prompt}
             />
-            <Components.Field type="checkbox" label="Include context" bind:value={includeContext}>
-              Quote paragraph in the beginning of the prompt for additional context
+            <Components.Field
+              type="checkbox"
+              label="Include context"
+              bind:value={includeContext}
+            >
+              Quote paragraph in the beginning of the prompt for additional
+              context
             </Components.Field>
             <Components.View class="flex w-full gap-1">
               <Components.Button
@@ -115,7 +131,7 @@ export default createRuntime({
             </Components.View>
           </Components.View>
         );
-      })
-    }
-  ]
+      }),
+    },
+  ],
 });

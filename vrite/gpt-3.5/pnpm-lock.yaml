@@ -7,11 +7,11 @@ dependencies:
 
 devDependencies:
   '@vrite/cli':
-    specifier: ^0.0.4
-    version: 0.0.4
+    specifier: ^0.0.5
+    version: 0.0.5
   '@vrite/sdk':
-    specifier: ^0.3.1
-    version: 0.3.1
+    specifier: ^0.3.3
+    version: 0.3.3
 
 packages:
 
@@ -238,8 +238,8 @@ packages:
     resolution: {integrity: sha512-OucS4KMHhFzhz27KxmWg7J+kIYqyqoW5kdIEI319hqARQQUTqhao3M/F+uFnDXD0Rg72iDDZxZNxq5gvctmLlg==}
     dev: true
 
-  /@vrite/cli@0.0.4:
-    resolution: {integrity: sha512-wsgwHz5HJ4vSd3L5NLP2lJdA6qoRGQa02CFvpB66O8qg5J8+L+H7nNqHBE1Mz1+2kp9XUEKZZD+T20iib/88KA==}
+  /@vrite/cli@0.0.5:
+    resolution: {integrity: sha512-kC3tZhoPylIybq/Bx5+n4n2Q4dZ7/jCe36N8dJ32piywryzUMJiN4zg/GjZ1xCJrWNCgrvRVS6RVRk/dXS7biw==}
     hasBin: true
     dependencies:
       chalk: 5.3.0
@@ -247,8 +247,8 @@ packages:
       esbuild: 0.18.20
     dev: true
 
-  /@vrite/sdk@0.3.1:
-    resolution: {integrity: sha512-J7FPmTZfxFDHuJOOUvfddWceks+mNiSpF6rFcXWuRkmBJdrXl5yHBOECyuizNHe9S4RkHJCfqXfpsqIvxjhhpg==}
+  /@vrite/sdk@0.3.3:
+    resolution: {integrity: sha512-F7wg9SgLgliq3ouOiCYAHmKMnaURksoTyWfkFqSv645lB3m05HrZqYkrZ/vzJ0uCFe5IyDktuxRY53r3KeGUzA==}
     peerDependencies:
       astro: ^2.9.2
     peerDependenciesMeta:
