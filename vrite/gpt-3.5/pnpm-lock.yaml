@@ -10,8 +10,8 @@ devDependencies:
     specifier: ^0.0.5
     version: 0.0.5
   '@vrite/sdk':
-    specifier: ^0.3.4
-    version: 0.3.4
+    specifier: ^0.3.5
+    version: 0.3.5
 
 packages:
 
@@ -247,8 +247,8 @@ packages:
       esbuild: 0.18.20
     dev: true
 
-  /@vrite/sdk@0.3.4:
-    resolution: {integrity: sha512-ZlLot8cTFnL9OtanO4/SgqYnXVVeD7YJq6f3n09vhRdkZ6922Az+4S7/4+R8aeTaOTRzR6kL7GreKTnNIUrXyw==}
+  /@vrite/sdk@0.3.5:
+    resolution: {integrity: sha512-GGYbgprNAkarl+gJe5FoQ+LhNjL58KJfbIJbHbnDqlVhHfKc/8YYF4QWJ0gd1l/NLAKPcNDVpKFFnjb/lOgp+w==}
     peerDependencies:
       astro: ^2.9.2
     peerDependenciesMeta:
