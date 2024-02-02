@@ -1,11 +1,13 @@
 /** @jsx createElement */
+/** @jsxFrag createFragment */
 import {
   Components,
   createView,
   createTemp,
   createFunction,
-  createElement,
   createRuntime,
+  createElement,
+  ExtensionBlockActionViewContext,
 } from "@vrite/sdk/extensions";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import {
@@ -19,39 +21,43 @@ declare global {
   }
 }
 
+type Config = {};
+
 const stopIcon =
   "M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z";
 
-export default createRuntime({
+const x = createRuntime({
   blockActions: [
     {
       id: "generate",
       blocks: ["paragraph"],
       label: "Generate with GPT",
-      view: createView((context) => {
+      view: createView<ExtensionBlockActionViewContext<Config>>((ctx) => {
         const [prompt] = createTemp<string>("");
         const [includeContext] = createTemp<boolean>(false);
         const [loading, setLoading] = createTemp<boolean>(false);
+        const content = ctx.use("content");
         const generate = createFunction(async () => {
-          let content = "";
+          let textContent = "";
           let processedPrompt = prompt();
 
           if (includeContext()) {
             processedPrompt = `"${gfmOutputTransformer(
-              context.content
+              content()
             )}"\n\n${prompt()}`;
           }
 
           setLoading(true);
+          await ctx.flush();
           window.currentRequestController = new AbortController();
           window.currentRequestController.signal.addEventListener(
             "abort",
             () => {
               setLoading(false);
-              // Force refresh
+              ctx.flush();
             }
           );
-          await fetchEventSource("https://extensions.vrite.io/gpt", {
+          await fetchEventSource("http://localhost:7777/gpt", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -66,8 +72,8 @@ export default createRuntime({
             },
             onerror(error) {
               setLoading(false);
-              // Force refresh
-              context.notify({
+              ctx.flush();
+              ctx.notify({
                 text: "Error while generating content",
                 type: "error",
               });
@@ -76,18 +82,20 @@ export default createRuntime({
             onmessage(event) {
               const partOfContent = decodeURIComponent(event.data);
 
-              content += partOfContent;
-              context.replaceContent(gfmInputTransformer(content).content);
+              textContent += partOfContent;
+              ctx.replaceContent(gfmInputTransformer(textContent).content);
             },
             onclose() {
               setLoading(false);
-              context.refreshContent();
+              ctx.flush();
+              ctx.refreshContent();
             },
           });
         });
         const stop = createFunction(() => {
           window.currentRequestController?.abort();
           setLoading(false);
+          ctx.flush();
         });
 
         return (
@@ -116,18 +124,16 @@ export default createRuntime({
               >
                 Generate
               </Components.Button>
-              <Components.Switch>
-                <Components.Match bind:value={loading}>
-                  <Components.Tooltip text="Stop" class="mt-1" fixed={true}>
-                    <Components.IconButton
-                      text="soft"
-                      class="m-0"
-                      path={stopIcon}
-                      on:click={stop}
-                    />
-                  </Components.Tooltip>
-                </Components.Match>
-              </Components.Switch>
+              <Components.Show bind:when={loading}>
+                <Components.Tooltip text="Stop" class="mt-1" fixed={true}>
+                  <Components.IconButton
+                    text="soft"
+                    class="m-0"
+                    path={stopIcon}
+                    on:click={stop}
+                  />
+                </Components.Tooltip>
+              </Components.Show>
             </Components.View>
           </Components.View>
         );
@@ -135,3 +141,5 @@ export default createRuntime({
     },
   ],
 });
+
+export default x;

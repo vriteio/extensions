@@ -1,0 +1,14 @@
+{
+  "name": "dev",
+  "displayName": "Dev.to",
+  "description": "Automatically publish and update articles on Dev.to",
+  "permissions": [
+    "contentGroups:read",
+    "contentPieces:read",
+    "webhooks:read",
+    "webhooks:write"
+  ],
+  "runtime": "./src/index.tsx",
+  "icon": "./assets/icon.svg",
+  "iconDark": "./assets/icon-dark.svg"
+}
