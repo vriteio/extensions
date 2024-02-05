@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@vrite/sdk':
-    specifier: ^0.3.6
-    version: 0.3.6
+    specifier: ^0.3.7
+    version: 0.3.7
 
 devDependencies:
   '@vrite/cli':
@@ -240,8 +240,8 @@ packages:
       esbuild: 0.18.20
     dev: true
 
-  /@vrite/sdk@0.3.6:
-    resolution: {integrity: sha512-cqLALEKsvi7qqUFr0MPGCZ4ErCyYAfrREBMt5qVh5UBKBGutInLWxJCsOABH+zxyeFjIOJqnFPONsgJNR1coZA==}
+  /@vrite/sdk@0.3.7:
+    resolution: {integrity: sha512-54z88ouihBSOeWQqbTsQx0/akayNDIi3cjyhxZNhStBXB0RADZDOGybLXBYvGRE5/vyUHapcJwH7poyne4rPNw==}
     peerDependencies:
       astro: ^2.9.2
     peerDependenciesMeta:

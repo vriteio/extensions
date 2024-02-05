@@ -144,7 +144,6 @@ export default createRuntime<Config>({
     const contentPiece = use("contentPiece");
     const [hashnodeId, setHashnodeId] = use("data.hashnodeId");
     const [autoPublish, setAutoPublish] = use("data.autoPublish");
-
     const disabled =
       !config?.accessToken ||
       !config.publicationId ||

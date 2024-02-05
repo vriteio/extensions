@@ -164,6 +164,7 @@ export default createRuntime<Config>({
     const publish = createFunction(async () => {
       try {
         setLoading(true);
+        await flush();
 
         const response = await fetch("https://extensions.vrite.io/dev", {
           method: "POST",
@@ -182,23 +183,23 @@ export default createRuntime<Config>({
           throw new Error("Couldn't publish to Dev.to");
         }
 
-        if (data.devId) {
+        if (devId()) {
           notify({ text: "Updated on Dev.to", type: "success" });
         } else {
           notify({ text: "Published to Dev.to", type: "success" });
         }
 
-        if (data.devId && data.devId !== data.devId) {
+        if (data.devId && data.devId !== devId()) {
           setDevId(data.devId);
         }
 
         setLoading(false);
         setButtonLabel("Update");
-        flush();
+        await flush();
       } catch (error) {
         notify({ text: "Couldn't publish to Dev.to", type: "error" });
         setLoading(false);
-        flush();
+        await flush();
       }
     });
 
@@ -216,6 +217,7 @@ export default createRuntime<Config>({
           type="text"
           color="contrast"
           label="Series name"
+          placeholder="Series name"
           bind:value={devSeries}
           disabled={disabled}
         >
