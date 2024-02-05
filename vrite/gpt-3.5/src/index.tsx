@@ -57,7 +57,7 @@ const x = createRuntime({
               ctx.flush();
             }
           );
-          await fetchEventSource("http://localhost:7777/gpt", {
+          await fetchEventSource("http://extensions.vrite.io/gpt", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
