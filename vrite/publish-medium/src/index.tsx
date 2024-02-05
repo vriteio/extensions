@@ -13,16 +13,14 @@ import {
 } from "@vrite/sdk/extensions";
 
 type Config = {
-  apiKey: string;
-  organizationId: string;
-  autoPublish: boolean;
+  token: string;
   contentGroupId: string;
-  requireCanonicalLink: boolean;
+  autoPublish: boolean;
   draft: boolean;
+  requireCanonicalLink: boolean;
 };
 type ContentPieceData = {
-  devId?: string;
-  devSeries?: string;
+  mediumId?: string;
   autoPublish?: boolean;
   draft?: boolean;
 };
@@ -39,13 +37,13 @@ export default createRuntime<Config>({
   onConfigure: createFunction(async ({ client, config, spec }) => {
     const webhooks = await client.webhooks.list({ extensionOnly: true });
     const configComplete =
-      config?.autoPublish && config?.contentGroupId && config?.apiKey;
+      config?.autoPublish && config?.contentGroupId && config?.token;
 
     if (webhooks.length > 0) {
       if (configComplete) {
         await client.webhooks.update({
           id: webhooks[0].id,
-          url: "https://extensions.vrite.io/dev/webhook",
+          url: "https://extensions.vrite.io/medium/webhook",
           metadata: {
             contentGroupId: `${config.contentGroupId}`,
           },
@@ -62,14 +60,13 @@ export default createRuntime<Config>({
         metadata: {
           contentGroupId: `${config.contentGroupId}`,
         },
-        url: "https://extensions.vrite.io/dev/webhook",
+        url: "https://extensions.vrite.io/medium/webhook",
       });
     }
   }),
   configurationView: createView<ExtensionConfigurationViewContext<Config>>(
     ({ use }) => {
-      const [apiKey] = use("config.apiKey");
-      const [organizationId] = use("config.organizationId");
+      const [token] = use("config.token");
       const [autoPublish, setAutoPublish] = use("config.autoPublish");
       const [contentGroupId, setContentGroupId] = use("config.contentGroupId");
       const [requireCanonicalLink] = use("config.requireCanonicalLink");
@@ -88,31 +85,21 @@ export default createRuntime<Config>({
           <Components.Field
             type="text"
             color="contrast"
-            label="API key"
-            placeholder="API key"
-            bind:value={apiKey}
+            label="Integration token"
+            placeholder="Integration token"
+            bind:value={token}
           >
-            Your Dev.to API key. You can generate one in the [settings
-            page](https://dev.to/settings/extensions), under **DEV Community API
-            Keys** section
+            Your Medium Integration token. You can generate one in the
+            [**Security and apps**
+            section](https://medium.com/me/settings/security) of your account
+            settings page
           </Components.Field>
-          <Components.Field
-            type="text"
-            color="contrast"
-            label="Organization ID"
-            optional
-            bind:value={organizationId}
-          >
-            ID of the Dev.to organization you are in and want to publish your
-            posts to. You can find the organization ID in the URL of the your
-            [Dev.to Dashboard](https://dev.to/dashboard), when **filtering posts
-            by organization**
-          </Components.Field>
+
           <Components.Show bind:when={autoPublish}>
             <Components.Field
               type="text"
               color="contrast"
-              label="Content group"
+              label="Content group ID"
               bind:value={contentGroupId}
             >
               Provide ID of a content group to auto-publish from, when content
@@ -127,6 +114,7 @@ export default createRuntime<Config>({
               Don't auto-publish when no canonical link is set
             </Components.Field>
           </Components.Show>
+
           <Components.Field
             type="checkbox"
             color="contrast"
@@ -141,7 +129,7 @@ export default createRuntime<Config>({
             label="Draft"
             bind:value={draft}
           >
-            whether the Dev.to article should be in draft (private) by default
+            whether the article should have the draft status by default
           </Components.Field>
         </>
       );
@@ -151,21 +139,22 @@ export default createRuntime<Config>({
     ExtensionContentPieceViewContext<Config, ContentPieceData>
   >(({ config, token, extensionId, notify, use, flush }) => {
     const disabled =
-      !config?.apiKey || (config.autoPublish && !config.contentGroupId);
+      !config?.token || (config.autoPublish && !config.contentGroupId);
     const contentPiece = use("contentPiece");
-    const [devId, setDevId] = use("data.devId");
-    const [devSeries] = use("data.devSeries");
+    const [mediumId, setMediumId] = use("data.mediumId");
     const [autoPublish, setAutoPublish] = use("data.autoPublish");
     const [draft, setDraft] = use("data.draft");
     const [loading, setLoading] = createTemp<boolean>(false);
+
     const [buttonLabel, setButtonLabel] = createTemp(
-      devId() ? "Update" : "Publish"
+      mediumId() ? "Republish" : "Publish"
     );
     const publish = createFunction(async () => {
       try {
         setLoading(true);
+        await flush();
 
-        const response = await fetch("https://extensions.vrite.io/dev", {
+        const response = await fetch("https://extensions.vrite.io/medium", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -178,27 +167,27 @@ export default createRuntime<Config>({
         });
         const data = await response.json();
 
-        if (!response.ok || !data.devId) {
-          throw new Error("Couldn't publish to Dev.to");
+        if (!response.ok || !data.mediumId) {
+          throw new Error("Couldn't publish to Medium");
         }
 
-        if (data.devId) {
-          notify({ text: "Updated on Dev.to", type: "success" });
+        if (mediumId()) {
+          notify({ text: "Republished to Medium", type: "success" });
         } else {
-          notify({ text: "Published to Dev.to", type: "success" });
+          notify({ text: "Published to Medium", type: "success" });
         }
 
-        if (data.devId && data.devId !== data.devId) {
-          setDevId(data.devId);
+        if (data.mediumId && data.mediumId !== mediumId()) {
+          setMediumId(data.mediumId);
         }
 
         setLoading(false);
-        setButtonLabel("Update");
-        flush();
+        setButtonLabel("Republish");
+        await flush();
       } catch (error) {
-        notify({ text: "Couldn't publish to Dev.to", type: "error" });
+        notify({ text: "Couldn't publish to Medium", type: "error" });
         setLoading(false);
-        flush();
+        await flush();
       }
     });
 
@@ -213,22 +202,13 @@ export default createRuntime<Config>({
     return (
       <Components.View class="flex flex-col gap-2">
         <Components.Field
-          type="text"
-          color="contrast"
-          label="Series name"
-          bind:value={devSeries}
-          disabled={disabled}
-        >
-          The exact name of the series to which this post should be added
-        </Components.Field>
-        <Components.Field
           type="checkbox"
           color="contrast"
           label="Draft"
           bind:value={draft}
           disabled={disabled}
         >
-          whether the Dev.to article should be in draft (private)
+          whether the article should have the draft status by default
         </Components.Field>
         <Components.Show when={config?.autoPublish}>
           <Components.Field

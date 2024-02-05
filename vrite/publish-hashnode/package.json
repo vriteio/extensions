@@ -1,5 +1,5 @@
 {
-  "name": "@vrite/extension-publish-dev",
+  "name": "@vrite/extension-publish-hashnode",
   "private": true,
   "files": [
     "build",

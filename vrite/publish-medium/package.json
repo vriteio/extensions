@@ -1,5 +1,5 @@
 {
-  "name": "@vrite/extension-publish-dev",
+  "name": "@vrite/extension-publish-medium",
   "private": true,
   "files": [
     "build",

@@ -13,18 +13,15 @@ import {
 } from "@vrite/sdk/extensions";
 
 type Config = {
-  apiKey: string;
-  organizationId: string;
-  autoPublish: boolean;
+  accessToken: string;
   contentGroupId: string;
+  autoPublish: boolean;
   requireCanonicalLink: boolean;
-  draft: boolean;
+  publicationId: string;
 };
 type ContentPieceData = {
-  devId?: string;
-  devSeries?: string;
+  hashnodeId?: string;
   autoPublish?: boolean;
-  draft?: boolean;
 };
 export default createRuntime<Config>({
   onUninstall: createFunction(async ({ client }) => {
@@ -39,13 +36,16 @@ export default createRuntime<Config>({
   onConfigure: createFunction(async ({ client, config, spec }) => {
     const webhooks = await client.webhooks.list({ extensionOnly: true });
     const configComplete =
-      config?.autoPublish && config?.contentGroupId && config?.apiKey;
+      config?.autoPublish &&
+      config?.contentGroupId &&
+      config?.publicationId &&
+      config.accessToken;
 
     if (webhooks.length > 0) {
       if (configComplete) {
         await client.webhooks.update({
           id: webhooks[0].id,
-          url: "https://extensions.vrite.io/dev/webhook",
+          url: "https://extensions.vrite.io/hashnode/webhook",
           metadata: {
             contentGroupId: `${config.contentGroupId}`,
           },
@@ -62,18 +62,17 @@ export default createRuntime<Config>({
         metadata: {
           contentGroupId: `${config.contentGroupId}`,
         },
-        url: "https://extensions.vrite.io/dev/webhook",
+        url: "https://extensions.vrite.io/hashnode/webhook",
       });
     }
   }),
   configurationView: createView<ExtensionConfigurationViewContext<Config>>(
     ({ use }) => {
-      const [apiKey] = use("config.apiKey");
-      const [organizationId] = use("config.organizationId");
+      const [accessToken] = use("config.accessToken");
+      const [publicationId] = use("config.publicationId");
       const [autoPublish, setAutoPublish] = use("config.autoPublish");
       const [contentGroupId, setContentGroupId] = use("config.contentGroupId");
       const [requireCanonicalLink] = use("config.requireCanonicalLink");
-      const [draft] = use("config.draft");
 
       if (typeof autoPublish() !== "boolean") {
         setAutoPublish(true);
@@ -88,31 +87,31 @@ export default createRuntime<Config>({
           <Components.Field
             type="text"
             color="contrast"
-            label="API key"
-            placeholder="API key"
-            bind:value={apiKey}
+            label="Access Token"
+            bind:value={accessToken}
+            placeholder="Access Token"
           >
-            Your Dev.to API key. You can generate one in the [settings
-            page](https://dev.to/settings/extensions), under **DEV Community API
-            Keys** section
+            Your Hashnode API Access Token. You can generate one in the
+            [Developer Settings](https://hashnode.com/settings/developer), of
+            your Hashnode account.
           </Components.Field>
           <Components.Field
             type="text"
             color="contrast"
-            label="Organization ID"
-            optional
-            bind:value={organizationId}
+            label="Publication ID"
+            bind:value={publicationId}
+            placeholder="Publication ID"
           >
-            ID of the Dev.to organization you are in and want to publish your
-            posts to. You can find the organization ID in the URL of the your
-            [Dev.to Dashboard](https://dev.to/dashboard), when **filtering posts
-            by organization**
+            ID of the Hashnode publication/blog you are in and want to publish
+            your posts to. You can find the publication ID in the URL (in form
+            of **hashnode.com/[id]/dashboard**) when visiting your publication's
+            dashboard.
           </Components.Field>
           <Components.Show bind:when={autoPublish}>
             <Components.Field
               type="text"
               color="contrast"
-              label="Content group"
+              label="Content group ID"
               bind:value={contentGroupId}
             >
               Provide ID of a content group to auto-publish from, when content
@@ -135,14 +134,6 @@ export default createRuntime<Config>({
           >
             Publish posts automatically
           </Components.Field>
-          <Components.Field
-            type="checkbox"
-            color="contrast"
-            label="Draft"
-            bind:value={draft}
-          >
-            whether the Dev.to article should be in draft (private) by default
-          </Components.Field>
         </>
       );
     }
@@ -150,22 +141,24 @@ export default createRuntime<Config>({
   contentPieceView: createView<
     ExtensionContentPieceViewContext<Config, ContentPieceData>
   >(({ config, token, extensionId, notify, use, flush }) => {
-    const disabled =
-      !config?.apiKey || (config.autoPublish && !config.contentGroupId);
     const contentPiece = use("contentPiece");
-    const [devId, setDevId] = use("data.devId");
-    const [devSeries] = use("data.devSeries");
+    const [hashnodeId, setHashnodeId] = use("data.hashnodeId");
     const [autoPublish, setAutoPublish] = use("data.autoPublish");
-    const [draft, setDraft] = use("data.draft");
+
+    const disabled =
+      !config?.accessToken ||
+      !config.publicationId ||
+      (config.autoPublish && !config.contentGroupId);
     const [loading, setLoading] = createTemp<boolean>(false);
     const [buttonLabel, setButtonLabel] = createTemp(
-      devId() ? "Update" : "Publish"
+      hashnodeId() ? "Update" : "Publish"
     );
     const publish = createFunction(async () => {
       try {
         setLoading(true);
+        await flush();
 
-        const response = await fetch("https://extensions.vrite.io/dev", {
+        const response = await fetch("https://extensions.vrite.io/hashnode", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -178,33 +171,29 @@ export default createRuntime<Config>({
         });
         const data = await response.json();
 
-        if (!response.ok || !data.devId) {
-          throw new Error("Couldn't publish to Dev.to");
+        if (!response.ok || !data.hashnodeId) {
+          throw new Error("Couldn't publish to Hashnode");
         }
 
-        if (data.devId) {
-          notify({ text: "Updated on Dev.to", type: "success" });
+        if (hashnodeId()) {
+          notify({ text: "Updated on Hashnode", type: "success" });
         } else {
-          notify({ text: "Published to Dev.to", type: "success" });
+          notify({ text: "Published to Hashnode", type: "success" });
         }
 
-        if (data.devId && data.devId !== data.devId) {
-          setDevId(data.devId);
+        if (data.hashnodeId && data.hashnodeId !== hashnodeId()) {
+          setHashnodeId(data.hashnodeId);
         }
 
         setLoading(false);
         setButtonLabel("Update");
-        flush();
+        await flush();
       } catch (error) {
-        notify({ text: "Couldn't publish to Dev.to", type: "error" });
+        notify({ text: "Couldn't publish to Hashnode", type: "error" });
         setLoading(false);
-        flush();
+        await flush();
       }
     });
-
-    if (typeof draft() !== "boolean") {
-      setDraft(config?.draft || false);
-    }
 
     if (typeof autoPublish() !== "boolean") {
       setAutoPublish(true);
@@ -212,24 +201,6 @@ export default createRuntime<Config>({
 
     return (
       <Components.View class="flex flex-col gap-2">
-        <Components.Field
-          type="text"
-          color="contrast"
-          label="Series name"
-          bind:value={devSeries}
-          disabled={disabled}
-        >
-          The exact name of the series to which this post should be added
-        </Components.Field>
-        <Components.Field
-          type="checkbox"
-          color="contrast"
-          label="Draft"
-          bind:value={draft}
-          disabled={disabled}
-        >
-          whether the Dev.to article should be in draft (private)
-        </Components.Field>
         <Components.Show when={config?.autoPublish}>
           <Components.Field
             type="checkbox"
@@ -240,16 +211,16 @@ export default createRuntime<Config>({
           >
             whether the article should be auto-published
           </Components.Field>
+          <Components.Button
+            color="primary"
+            class="w-full justify-center items-center m-0"
+            disabled={disabled}
+            bind:loading={loading}
+            on:click={publish}
+          >
+            <Components.Text bind:content={buttonLabel} />
+          </Components.Button>
         </Components.Show>
-        <Components.Button
-          color="primary"
-          class="w-full flex justify-center items-center m-0"
-          disabled={disabled}
-          bind:loading={loading}
-          on:click={publish}
-        >
-          <Components.Text bind:content={buttonLabel} />
-        </Components.Button>
       </Components.View>
     );
   }),

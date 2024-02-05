@@ -1,0 +1,14 @@
+{
+  "name": "medium",
+  "displayName": "Medium",
+  "description": "Automatically publish articles to Medium",
+  "permissions": [
+    "contentGroups:read",
+    "contentPieces:read",
+    "webhooks:read",
+    "webhooks:write"
+  ],
+  "runtime": "./src/index.tsx",
+  "icon": "./assets/icon.svg",
+  "iconDark": "./assets/icon-dark.svg"
+}

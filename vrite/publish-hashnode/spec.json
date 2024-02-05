@@ -1,0 +1,13 @@
+{
+  "name": "hashnode",
+  "displayName": "Hashnode",
+  "description": "Automatically publish and update articles on Hashnode",
+  "permissions": [
+    "contentGroups:read",
+    "contentPieces:read",
+    "webhooks:read",
+    "webhooks:write"
+  ],
+  "runtime": "./src/index.tsx",
+  "icon": "./assets/icon.svg"
+}

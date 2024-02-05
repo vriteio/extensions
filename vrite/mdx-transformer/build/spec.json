@@ -1,0 +1,1 @@
+{"name":"mdx-transformer","displayName":"MDX","description":"Adds MDX transformers to Git sync","permissions":["workspace:write","workspace:read"],"runtime":"index.js","icon":"icon.svg","iconDark":"icon-dark.svg"}

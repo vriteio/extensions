@@ -1,5 +1,5 @@
 {
-  "name": "@vrite/extension-publish-dev",
+  "name": "@vrite/extension-mdx-transformer",
   "private": true,
   "files": [
     "build",
@@ -14,10 +14,10 @@
   "scripts": {
     "build": "vrite build-extension ./spec.json"
   },
-  "devDependencies": {
-    "@vrite/cli": "^0.0.5"
-  },
   "dependencies": {
     "@vrite/sdk": "^0.3.6"
+  },
+  "devDependencies": {
+    "@vrite/cli": "^0.0.5"
   }
 }

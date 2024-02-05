@@ -1,0 +1,9 @@
+{
+  "name": "mdx-transformer",
+  "displayName": "MDX",
+  "description": "Adds MDX transformers to Git sync",
+  "permissions": ["workspace:write", "workspace:read"],
+  "runtime": "./src/index.tsx",
+  "icon": "./assets/icon.svg",
+  "iconDark": "./assets/icon-dark.svg"
+}
