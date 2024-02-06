@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
-    "@vrite/sdk": "^0.3.7"
+    "@vrite/sdk": "^0.3.8"
   },
   "devDependencies": {
     "@vrite/cli": "^0.0.5"

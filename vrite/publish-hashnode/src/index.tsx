@@ -210,16 +210,17 @@ export default createRuntime<Config>({
           >
             whether the article should be auto-published
           </Components.Field>
-          <Components.Button
-            color="primary"
-            class="w-full justify-center items-center m-0"
-            disabled={disabled}
-            bind:loading={loading}
-            on:click={publish}
-          >
-            <Components.Text bind:content={buttonLabel} />
-          </Components.Button>
         </Components.Show>
+
+        <Components.Button
+          color="primary"
+          class="w-full justify-center items-center m-0"
+          disabled={disabled}
+          bind:loading={loading}
+          on:click={publish}
+        >
+          <Components.Text bind:content={buttonLabel} />
+        </Components.Button>
       </Components.View>
     );
   }),
