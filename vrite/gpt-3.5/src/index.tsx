@@ -42,9 +42,10 @@ const x = createRuntime({
           let processedPrompt = prompt();
 
           if (includeContext()) {
-            processedPrompt = `"${gfmOutputTransformer(
-              content()
-            )}"\n\n${prompt()}`;
+            processedPrompt = `"${gfmOutputTransformer({
+              type: "doc",
+              content: [content()],
+            })}"\n\n${prompt()}`;
           }
 
           setLoading(true);
