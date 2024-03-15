@@ -1,0 +1,9 @@
+{
+  "name": "editor-important",
+  "displayName": "Important Node",
+  "description": "Renders custom preview of `<Important>` element in the editor",
+  "permissions": [],
+  "runtime": "./src/index.tsx",
+  "icon": "./assets/icon.svg",
+  "iconDark": "./assets/icon-dark.svg"
+}
