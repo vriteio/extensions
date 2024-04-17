@@ -15,7 +15,7 @@
     "build": "vrite build-extension ./spec.json"
   },
   "dependencies": {
-    "@vrite/sdk": "^0.4.0"
+    "@vrite/sdk": "^0.4.2"
   },
   "devDependencies": {
     "@vrite/cli": "^0.0.6"

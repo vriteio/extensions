@@ -1,1 +1,0 @@
-{"name":"editor-important","displayName":"Important Node","description":"Renders custom preview of `<Important>` element in the editor","permissions":[],"runtime":"index.js","icon":"icon.svg","iconDark":"icon-dark.svg"}

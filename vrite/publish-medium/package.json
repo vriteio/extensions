@@ -18,6 +18,6 @@
     "@vrite/cli": "^0.0.6"
   },
   "dependencies": {
-    "@vrite/sdk": "^0.4.0"
+    "@vrite/sdk": "^0.4.2"
   }
 }
