@@ -86,7 +86,6 @@ export default createRuntime<Config>({
         <>
           <Components.Field
             type="text"
-            color="contrast"
             label="Access Token"
             bind:value={accessToken}
             placeholder="Access Token"
@@ -97,7 +96,6 @@ export default createRuntime<Config>({
           </Components.Field>
           <Components.Field
             type="text"
-            color="contrast"
             label="Publication ID"
             bind:value={publicationId}
             placeholder="Publication ID"
@@ -110,7 +108,6 @@ export default createRuntime<Config>({
           <Components.Show bind:when={autoPublish}>
             <Components.Field
               type="text"
-              color="contrast"
               label="Content group ID"
               bind:value={contentGroupId}
             >
@@ -119,7 +116,6 @@ export default createRuntime<Config>({
             </Components.Field>
             <Components.Field
               type="checkbox"
-              color="contrast"
               label="Require canonical link"
               bind:value={requireCanonicalLink}
             >
@@ -128,7 +124,6 @@ export default createRuntime<Config>({
           </Components.Show>
           <Components.Field
             type="checkbox"
-            color="contrast"
             label="Auto-publish"
             bind:value={autoPublish}
           >
@@ -203,7 +198,6 @@ export default createRuntime<Config>({
         <Components.Show when={config?.autoPublish}>
           <Components.Field
             type="checkbox"
-            color="contrast"
             label="Auto-publish"
             bind:value={autoPublish}
             disabled={disabled}

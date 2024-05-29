@@ -87,7 +87,6 @@ export default createRuntime<Config>({
         <>
           <Components.Field
             type="text"
-            color="contrast"
             label="API key"
             placeholder="API key"
             bind:value={apiKey}
@@ -98,7 +97,6 @@ export default createRuntime<Config>({
           </Components.Field>
           <Components.Field
             type="text"
-            color="contrast"
             label="Organization ID"
             optional
             bind:value={organizationId}
@@ -111,7 +109,6 @@ export default createRuntime<Config>({
           <Components.Show bind:when={autoPublish}>
             <Components.Field
               type="text"
-              color="contrast"
               label="Content group"
               bind:value={contentGroupId}
             >
@@ -120,7 +117,6 @@ export default createRuntime<Config>({
             </Components.Field>
             <Components.Field
               type="checkbox"
-              color="contrast"
               label="Require canonical link"
               bind:value={requireCanonicalLink}
             >
@@ -129,18 +125,12 @@ export default createRuntime<Config>({
           </Components.Show>
           <Components.Field
             type="checkbox"
-            color="contrast"
             label="Auto-publish"
             bind:value={autoPublish}
           >
             Publish posts automatically
           </Components.Field>
-          <Components.Field
-            type="checkbox"
-            color="contrast"
-            label="Draft"
-            bind:value={draft}
-          >
+          <Components.Field type="checkbox" label="Draft" bind:value={draft}>
             whether the Dev.to article should be in draft (private) by default
           </Components.Field>
         </>
@@ -215,7 +205,6 @@ export default createRuntime<Config>({
       <Components.View class="flex flex-col gap-2">
         <Components.Field
           type="text"
-          color="contrast"
           label="Series name"
           placeholder="Series name"
           bind:value={devSeries}
@@ -225,7 +214,6 @@ export default createRuntime<Config>({
         </Components.Field>
         <Components.Field
           type="checkbox"
-          color="contrast"
           label="Draft"
           bind:value={draft}
           disabled={disabled}
@@ -235,7 +223,6 @@ export default createRuntime<Config>({
         <Components.Show when={config?.autoPublish}>
           <Components.Field
             type="checkbox"
-            color="contrast"
             label="Auto-publish"
             bind:value={autoPublish}
             disabled={disabled}

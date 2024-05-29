@@ -5,8 +5,8 @@ dependencies:
     specifier: ^2.0.1
     version: 2.0.1
   '@vrite/sdk':
-    specifier: ^0.4.2
-    version: 0.4.2
+    specifier: ^0.4.6
+    version: 0.4.6
 
 devDependencies:
   '@vrite/cli':
@@ -259,8 +259,8 @@ packages:
       esbuild: 0.20.0
     dev: true
 
-  /@vrite/sdk@0.4.2:
-    resolution: {integrity: sha512-kv3nAjByzOAOu3T2/H+OeaZnW+fzck2Wd+irz8POfV1RZM9Z6S6cmQUwJuSRX7UlpIMxp4sZH3X6//Wx1XhVkg==}
+  /@vrite/sdk@0.4.6:
+    resolution: {integrity: sha512-DXnqG/md463zoKaNARSZOoXE0VPkZhyYF7QELAdqxdnIAjPoHd6zA+2TaQGKa5YTJ+5+5zh3wcsKIWnOr1FH3g==}
     peerDependencies:
       astro: ^4.3.2
     peerDependenciesMeta:
