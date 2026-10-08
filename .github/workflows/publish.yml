@@ -1,0 +1,65 @@
+name: Publish
+
+# Runs on reviewed commits only. New versions are written next to the published ones, which are
+# never overwritten; the index is written last and the site is deployed in one step.
+on:
+  push:
+    branches: [andesine]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+env:
+  ANDESINE_CLI_VERSION: 0.5.0
+  SITE_URL: https://extensions.andesine.app
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch the published registry
+        run: |
+          if git ls-remote --exit-code origin gh-pages >/dev/null; then
+            git fetch --depth 1 origin gh-pages
+            git worktree add published FETCH_HEAD
+          else
+            git worktree add --orphan -b gh-pages published
+          fi
+      - name: Install extension dependencies
+        run: |
+          shopt -s nullglob
+          for project in extensions/*/*/; do
+            npm ci --ignore-scripts --prefix "$project"
+          done
+      - name: Build the registry
+        run: |
+          npx --yes "andesine@${ANDESINE_CLI_VERSION}" extensions registry build \
+            --published published --site-url "$SITE_URL" --commit "$GITHUB_SHA"
+          echo "${SITE_URL#https://}" > published/CNAME
+          touch published/.nojekyll
+      # The branch keeps every published file, so later builds never lose or rewrite a version.
+      - name: Record the published registry
+        working-directory: published
+        run: |
+          git add -A
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Publish ${GITHUB_SHA}"
+          git push origin HEAD:gh-pages
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: published
+      - uses: actions/deploy-pages@v4

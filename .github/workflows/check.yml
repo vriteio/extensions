@@ -1,0 +1,40 @@
+name: Check
+
+# Pull requests run with a read-only token and no secrets: building an extension runs its
+# configuration file, which is untrusted until review.
+on:
+  pull_request:
+    branches: [andesine]
+
+permissions:
+  contents: read
+
+env:
+  ANDESINE_CLI_VERSION: 0.5.0
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # The published site: existing versions, keys, and revocations that changes must keep.
+      - name: Fetch the published registry
+        run: |
+          if git ls-remote --exit-code origin gh-pages >/dev/null; then
+            git fetch --depth 1 origin gh-pages
+            git worktree add published FETCH_HEAD
+          else
+            mkdir published
+          fi
+      # Locked dependencies only; install scripts never run.
+      - name: Install extension dependencies
+        run: |
+          shopt -s nullglob
+          for project in extensions/*/*/; do
+            npm ci --ignore-scripts --prefix "$project"
+          done
+      - name: Check the registry
+        run: npx --yes "andesine@${ANDESINE_CLI_VERSION}" extensions registry check --published published

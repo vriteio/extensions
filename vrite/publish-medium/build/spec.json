@@ -1,1 +1,0 @@
-{"name":"medium","displayName":"Medium","description":"Automatically publish articles to Medium","permissions":["contentGroups:read","contentPieces:read","webhooks:read","webhooks:write"],"runtime":"index.js","icon":"icon.svg","iconDark":"icon-dark.svg"}
