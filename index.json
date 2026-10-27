@@ -1,6 +1,673 @@
 {
   "formatVersion": 1,
-  "generatedAt": "2026-10-08T17:44:45.772Z",
-  "extensions": [],
+  "generatedAt": "2026-10-27T21:48:10.321Z",
+  "extensions": [
+    {
+      "name": "andesine/github",
+      "publisher": {
+        "name": "Andesine",
+        "url": "https://andesine.app"
+      },
+      "keys": [
+        {
+          "kid": "key-2026-10-12",
+          "kty": "OKP",
+          "alg": "EdDSA",
+          "crv": "Ed25519",
+          "x": "ZxVaWMo7t4k0vOzQvUu1kWfZBYv64pv0gcb2MxFrj8w"
+        }
+      ],
+      "revokedKeys": [],
+      "versions": [
+        {
+          "manifest": {
+            "name": "andesine/github",
+            "version": "0.1.0",
+            "displayName": "GitHub Sync",
+            "description": "Syncs a collection with Markdown or MDX files in a GitHub repository, through a publishing channel.",
+            "icon": "i-github-sync:logo?bg",
+            "apiVersion": 1,
+            "permissions": [
+              "entries",
+              "collections",
+              "versions",
+              "read:publishing",
+              "publishing"
+            ],
+            "requests": [
+              "https://github.com"
+            ],
+            "backend": {
+              "url": "https://github.extensions.andesine.app",
+              "keys": [
+                {
+                  "kid": "key-2026-10-12",
+                  "kty": "OKP",
+                  "alg": "EdDSA",
+                  "crv": "Ed25519",
+                  "x": "ZxVaWMo7t4k0vOzQvUu1kWfZBYv64pv0gcb2MxFrj8w"
+                }
+              ]
+            },
+            "webhooks": {
+              "lifecycle": {
+                "events": [
+                  "extension.uninstalled"
+                ],
+                "path": "/andesine/webhooks",
+                "channels": []
+              },
+              "publishing": {
+                "events": [
+                  "publishing.channel_advanced"
+                ],
+                "path": "/andesine/webhooks",
+                "channels": []
+              }
+            },
+            "elementViews": [],
+            "blockActions": [],
+            "panels": [
+              {
+                "id": "github",
+                "name": "GitHub Sync",
+                "icon": "i-github-sync:github",
+                "side": "right",
+                "context": "collection",
+                "view": "GitHubPanel"
+              }
+            ],
+            "pages": [
+              {
+                "id": "github-setup",
+                "name": "Setup",
+                "icon": "i-lucide:github",
+                "context": "collection",
+                "highlightContext": true,
+                "when": {
+                  "publishing": true,
+                  "storage": {
+                    "key": "mapping:{publishingCollectionID}",
+                    "exists": false
+                  }
+                },
+                "view": "GitHubSetupPage"
+              },
+              {
+                "id": "github-mapping",
+                "name": "Mapping settings",
+                "icon": "i-lucide:github",
+                "context": "collection",
+                "highlightContext": true,
+                "when": {
+                  "storage": {
+                    "key": "mapping:{publishingCollectionID}",
+                    "exists": true
+                  }
+                },
+                "view": "GitHubMappingPage"
+              },
+              {
+                "id": "github-sync",
+                "name": "Sync details",
+                "icon": "i-lucide:refresh-cw",
+                "context": "collection",
+                "parent": "github-mapping",
+                "when": {
+                  "storage": {
+                    "key": "mapping:{publishingCollectionID}",
+                    "exists": true
+                  }
+                },
+                "view": "GitHubSyncPage"
+              }
+            ]
+          },
+          "sourceCommit": "5a8a7fa31c9d0e3b53e92f6becf5dc276d503d44",
+          "artifacts": {
+            "frontend": {
+              "url": "https://extensions.andesine.app/extensions/andesine/github/0.1.0/frontend.js",
+              "sha256": "fdb7356a1930485b01279acebb95ba87f6fade811e12cb82a2ebd618723e33bf",
+              "size": 79284
+            },
+            "styles": {
+              "url": "https://extensions.andesine.app/extensions/andesine/github/0.1.0/styles.css",
+              "sha256": "ebef47d4a256fd85afe564b8e22780f9c58c26892224393cf591663dfe29e6e7",
+              "size": 5127
+            },
+            "icons": {
+              "url": "https://extensions.andesine.app/extensions/andesine/github/0.1.0/icons.css",
+              "sha256": "774fd6c0926e9ecef017a1f289107a6079a49637c7325afcc03a32a4a88e7cd9",
+              "size": 3959
+            }
+          },
+          "publishedAt": "2026-10-27T21:48:10.315Z"
+        }
+      ]
+    },
+    {
+      "name": "andesine/pages",
+      "publisher": {
+        "name": "Andesine",
+        "url": "https://andesine.app"
+      },
+      "keys": [
+        {
+          "kid": "key-2026-10-12",
+          "kty": "OKP",
+          "alg": "EdDSA",
+          "crv": "Ed25519",
+          "x": "CDotjwSSau5mni50IqyzuMBo3ljdCJ1MEhiEs6BBTn8"
+        }
+      ],
+      "revokedKeys": [],
+      "versions": [
+        {
+          "manifest": {
+            "name": "andesine/pages",
+            "version": "0.1.0",
+            "displayName": "Andesine Pages",
+            "description": "Hosts documentation sites for collections, and edits the content components of Andesine Pages sites.",
+            "icon": "i-pages:logo?bg",
+            "apiVersion": 1,
+            "permissions": [
+              "read:collections",
+              "read:publishing",
+              "publishable-keys",
+              "ai-answers"
+            ],
+            "requests": [],
+            "backend": {
+              "url": "https://pages.extensions.andesine.app",
+              "keys": [
+                {
+                  "kid": "key-2026-10-12",
+                  "kty": "OKP",
+                  "alg": "EdDSA",
+                  "crv": "Ed25519",
+                  "x": "CDotjwSSau5mni50IqyzuMBo3ljdCJ1MEhiEs6BBTn8"
+                }
+              ]
+            },
+            "webhooks": {
+              "lifecycle": {
+                "events": [
+                  "extension.uninstalled"
+                ],
+                "path": "/andesine/webhooks",
+                "channels": []
+              },
+              "publishing": {
+                "events": [
+                  "publishing.channel_advanced"
+                ],
+                "path": "/andesine/webhooks",
+                "channels": []
+              }
+            },
+            "elementViews": [
+              {
+                "id": "callout",
+                "name": "Callout",
+                "description": "A note, tip, warning, or danger box",
+                "icon": "i-lucide:info",
+                "element": "Callout",
+                "view": "CalloutView",
+                "content": true,
+                "accepts": {
+                  "blocks": [
+                    "paragraph"
+                  ]
+                },
+                "props": [
+                  {
+                    "name": "type",
+                    "title": "Type",
+                    "type": "string",
+                    "enum": [
+                      "note",
+                      "tip",
+                      "warning",
+                      "danger"
+                    ],
+                    "control": "toggle",
+                    "default": "note"
+                  },
+                  {
+                    "name": "title",
+                    "title": "Title",
+                    "type": "string",
+                    "placeholder": "Optional"
+                  }
+                ],
+                "children": []
+              },
+              {
+                "id": "card",
+                "name": "Card",
+                "description": "A card with a title, an optional link, and an icon",
+                "icon": "i-lucide:square",
+                "element": "Card",
+                "view": "CardView",
+                "content": true,
+                "accepts": {
+                  "blocks": [
+                    "paragraph"
+                  ]
+                },
+                "props": [
+                  {
+                    "name": "title",
+                    "title": "Title",
+                    "type": "string",
+                    "minLength": 1,
+                    "default": "Title"
+                  },
+                  {
+                    "name": "icon",
+                    "title": "Icon",
+                    "type": "string",
+                    "control": "icon"
+                  },
+                  {
+                    "name": "href",
+                    "title": "Link",
+                    "type": "string",
+                    "control": "link"
+                  }
+                ],
+                "children": []
+              },
+              {
+                "id": "card-grid",
+                "name": "Card grid",
+                "description": "Cards side by side",
+                "icon": "i-lucide:layout-grid",
+                "element": "CardGrid",
+                "view": "CardGridView",
+                "content": true,
+                "accepts": {
+                  "elements": [
+                    "Card"
+                  ]
+                },
+                "children": []
+              },
+              {
+                "id": "accordion",
+                "name": "Accordion",
+                "description": "Content shown when its title is opened",
+                "icon": "i-lucide:chevrons-up-down",
+                "element": "Accordion",
+                "view": "AccordionView",
+                "content": true,
+                "rejects": {
+                  "elements": [
+                    "Accordion"
+                  ]
+                },
+                "props": [
+                  {
+                    "name": "title",
+                    "title": "Title",
+                    "type": "string",
+                    "minLength": 1,
+                    "default": "Details"
+                  },
+                  {
+                    "name": "open",
+                    "title": "Open on load",
+                    "type": "boolean"
+                  }
+                ],
+                "children": []
+              },
+              {
+                "id": "figure",
+                "name": "Figure",
+                "description": "An image or other content with a caption",
+                "icon": "i-lucide:image",
+                "element": "Figure",
+                "view": "FigureView",
+                "content": true,
+                "rejects": {
+                  "elements": [
+                    "Figure"
+                  ]
+                },
+                "props": [
+                  {
+                    "name": "caption",
+                    "title": "Caption",
+                    "type": "string",
+                    "minLength": 1,
+                    "default": "Caption"
+                  }
+                ],
+                "children": []
+              },
+              {
+                "id": "steps",
+                "name": "Steps",
+                "description": "Numbered steps with titles",
+                "icon": "i-lucide:list-ordered",
+                "element": "Steps",
+                "view": "StepsView",
+                "content": true,
+                "accepts": {
+                  "elements": [
+                    "Step"
+                  ]
+                },
+                "children": [
+                  {
+                    "element": "Step",
+                    "name": "Step",
+                    "description": "A step of the steps it's in",
+                    "icon": "i-lucide:circle-dot",
+                    "props": [
+                      {
+                        "name": "title",
+                        "title": "Title",
+                        "type": "string",
+                        "minLength": 1,
+                        "default": "Step"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "file-tree",
+                "name": "File tree",
+                "description": "Files and folders",
+                "icon": "i-lucide:folder-tree",
+                "element": "FileTree",
+                "view": "FileTreeView",
+                "content": true,
+                "accepts": {
+                  "elements": [
+                    "Folder",
+                    "File"
+                  ]
+                },
+                "children": [
+                  {
+                    "element": "Folder",
+                    "name": "Folder",
+                    "description": "A folder in a file tree",
+                    "icon": "i-lucide:folder",
+                    "accepts": {
+                      "elements": [
+                        "Folder",
+                        "File"
+                      ]
+                    },
+                    "props": [
+                      {
+                        "name": "name",
+                        "title": "Name",
+                        "type": "string",
+                        "minLength": 1,
+                        "default": "folder"
+                      }
+                    ]
+                  },
+                  {
+                    "element": "File",
+                    "name": "File",
+                    "description": "A file in a file tree",
+                    "icon": "i-lucide:file",
+                    "content": false,
+                    "props": [
+                      {
+                        "name": "name",
+                        "title": "Name",
+                        "type": "string",
+                        "minLength": 1,
+                        "default": "file.ts"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "tabs",
+                "name": "Tabs",
+                "description": "Content in tabs",
+                "icon": "i-lucide:panels-top-left",
+                "element": "Tabs",
+                "view": "TabsView",
+                "content": true,
+                "accepts": {
+                  "elements": [
+                    "Tab"
+                  ]
+                },
+                "props": [
+                  {
+                    "name": "syncKey",
+                    "title": "Sync key",
+                    "description": "Tabs with the same key switch together on a page",
+                    "type": "string"
+                  }
+                ],
+                "children": [
+                  {
+                    "element": "Tab",
+                    "name": "Tab",
+                    "description": "A tab of the tabs it's in",
+                    "icon": "i-lucide:square-dashed",
+                    "rejects": {
+                      "elements": [
+                        "Tabs"
+                      ]
+                    },
+                    "props": [
+                      {
+                        "name": "label",
+                        "title": "Label",
+                        "type": "string",
+                        "minLength": 1,
+                        "default": "Tab"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "code-group",
+                "name": "Code group",
+                "description": "Code blocks shown as tabs",
+                "icon": "i-lucide:code",
+                "element": "CodeGroup",
+                "view": "CodeGroupView",
+                "content": true,
+                "accepts": {
+                  "blocks": [
+                    "codeBlock"
+                  ]
+                },
+                "children": []
+              },
+              {
+                "id": "visibility",
+                "name": "Visibility",
+                "description": "Content only for the web page, or only for agents",
+                "icon": "i-lucide:eye",
+                "element": "Visibility",
+                "view": "VisibilityView",
+                "content": true,
+                "rejects": {
+                  "elements": [
+                    "Visibility"
+                  ]
+                },
+                "props": [
+                  {
+                    "name": "for",
+                    "title": "Shown to",
+                    "type": "string",
+                    "enum": [
+                      "humans",
+                      "agents"
+                    ],
+                    "control": "toggle",
+                    "default": "humans"
+                  }
+                ],
+                "children": []
+              }
+            ],
+            "blockActions": [],
+            "panels": [
+              {
+                "id": "site",
+                "name": "Andesine Pages",
+                "icon": "i-lucide:globe",
+                "side": "right",
+                "context": "collection",
+                "view": "SitePanel"
+              }
+            ],
+            "pages": [
+              {
+                "id": "site-setup",
+                "name": "Setup",
+                "icon": "i-lucide:globe",
+                "context": "collection",
+                "highlightContext": true,
+                "when": {
+                  "publishing": true,
+                  "storage": {
+                    "key": "site:{publishingCollectionID}",
+                    "exists": false
+                  }
+                },
+                "view": "SiteSetupPage"
+              },
+              {
+                "id": "site-settings",
+                "name": "Site",
+                "icon": "i-lucide:globe",
+                "context": "collection",
+                "highlightContext": true,
+                "when": {
+                  "storage": {
+                    "key": "site:{publishingCollectionID}",
+                    "exists": true
+                  }
+                },
+                "view": "SitePage"
+              },
+              {
+                "id": "site-general",
+                "name": "General",
+                "icon": "i-lucide:settings",
+                "context": "collection",
+                "parent": "site-settings",
+                "when": {
+                  "storage": {
+                    "key": "site:{publishingCollectionID}",
+                    "exists": true
+                  }
+                },
+                "view": "SiteGeneralPage"
+              },
+              {
+                "id": "site-appearance",
+                "name": "Appearance",
+                "icon": "i-lucide:palette",
+                "context": "collection",
+                "parent": "site-settings",
+                "when": {
+                  "storage": {
+                    "key": "site:{publishingCollectionID}",
+                    "exists": true
+                  }
+                },
+                "view": "SiteAppearancePage"
+              },
+              {
+                "id": "site-navigation",
+                "name": "Navigation",
+                "icon": "i-lucide:panel-top",
+                "context": "collection",
+                "parent": "site-settings",
+                "when": {
+                  "storage": {
+                    "key": "site:{publishingCollectionID}",
+                    "exists": true
+                  }
+                },
+                "view": "SiteNavigationPage"
+              },
+              {
+                "id": "site-content",
+                "name": "Content and AI",
+                "icon": "i-lucide:sparkles",
+                "context": "collection",
+                "parent": "site-settings",
+                "when": {
+                  "storage": {
+                    "key": "site:{publishingCollectionID}",
+                    "exists": true
+                  }
+                },
+                "view": "SiteContentPage"
+              },
+              {
+                "id": "site-domains",
+                "name": "Domains",
+                "icon": "i-lucide:link",
+                "context": "collection",
+                "parent": "site-settings",
+                "when": {
+                  "storage": {
+                    "key": "site:{publishingCollectionID}",
+                    "exists": true
+                  }
+                },
+                "view": "SiteDomainsPage"
+              },
+              {
+                "id": "site-builds",
+                "name": "Builds",
+                "icon": "i-lucide:hammer",
+                "context": "collection",
+                "parent": "site-settings",
+                "when": {
+                  "storage": {
+                    "key": "site:{publishingCollectionID}",
+                    "exists": true
+                  }
+                },
+                "view": "SiteBuildsPage"
+              }
+            ]
+          },
+          "sourceCommit": "5a8a7fa31c9d0e3b53e92f6becf5dc276d503d44",
+          "artifacts": {
+            "frontend": {
+              "url": "https://extensions.andesine.app/extensions/andesine/pages/0.1.0/frontend.js",
+              "sha256": "c1729b10e2e8e37885afcc71db943295088db152991db8c387a102439acac842",
+              "size": 111122
+            },
+            "styles": {
+              "url": "https://extensions.andesine.app/extensions/andesine/pages/0.1.0/styles.css",
+              "sha256": "e618de45dedfb12a1d1030bf66d7addcd19b448e00f9d48211fa0cf56b10d48c",
+              "size": 31934
+            },
+            "icons": {
+              "url": "https://extensions.andesine.app/extensions/andesine/pages/0.1.0/icons.css",
+              "sha256": "e1a0ea01a38018604786e8b688f3f9e932de99dc1a8664c7c7bca1f1bce7087e",
+              "size": 15195
+            }
+          },
+          "publishedAt": "2026-10-27T21:48:10.319Z"
+        }
+      ]
+    }
+  ],
   "revocations": []
 }

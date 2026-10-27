@@ -1,0 +1,124 @@
+{
+  "manifest": {
+    "name": "andesine/github",
+    "version": "0.1.0",
+    "displayName": "GitHub Sync",
+    "description": "Syncs a collection with Markdown or MDX files in a GitHub repository, through a publishing channel.",
+    "icon": "i-github-sync:logo?bg",
+    "apiVersion": 1,
+    "permissions": [
+      "entries",
+      "collections",
+      "versions",
+      "read:publishing",
+      "publishing"
+    ],
+    "requests": [
+      "https://github.com"
+    ],
+    "backend": {
+      "url": "https://github.extensions.andesine.app",
+      "keys": [
+        {
+          "kid": "key-2026-10-12",
+          "kty": "OKP",
+          "alg": "EdDSA",
+          "crv": "Ed25519",
+          "x": "ZxVaWMo7t4k0vOzQvUu1kWfZBYv64pv0gcb2MxFrj8w"
+        }
+      ]
+    },
+    "webhooks": {
+      "lifecycle": {
+        "events": [
+          "extension.uninstalled"
+        ],
+        "path": "/andesine/webhooks",
+        "channels": []
+      },
+      "publishing": {
+        "events": [
+          "publishing.channel_advanced"
+        ],
+        "path": "/andesine/webhooks",
+        "channels": []
+      }
+    },
+    "elementViews": [],
+    "blockActions": [],
+    "panels": [
+      {
+        "id": "github",
+        "name": "GitHub Sync",
+        "icon": "i-github-sync:github",
+        "side": "right",
+        "context": "collection",
+        "view": "GitHubPanel"
+      }
+    ],
+    "pages": [
+      {
+        "id": "github-setup",
+        "name": "Setup",
+        "icon": "i-lucide:github",
+        "context": "collection",
+        "highlightContext": true,
+        "when": {
+          "publishing": true,
+          "storage": {
+            "key": "mapping:{publishingCollectionID}",
+            "exists": false
+          }
+        },
+        "view": "GitHubSetupPage"
+      },
+      {
+        "id": "github-mapping",
+        "name": "Mapping settings",
+        "icon": "i-lucide:github",
+        "context": "collection",
+        "highlightContext": true,
+        "when": {
+          "storage": {
+            "key": "mapping:{publishingCollectionID}",
+            "exists": true
+          }
+        },
+        "view": "GitHubMappingPage"
+      },
+      {
+        "id": "github-sync",
+        "name": "Sync details",
+        "icon": "i-lucide:refresh-cw",
+        "context": "collection",
+        "parent": "github-mapping",
+        "when": {
+          "storage": {
+            "key": "mapping:{publishingCollectionID}",
+            "exists": true
+          }
+        },
+        "view": "GitHubSyncPage"
+      }
+    ]
+  },
+  "sourceCommit": "5a8a7fa31c9d0e3b53e92f6becf5dc276d503d44",
+  "artifacts": {
+    "frontend": {
+      "url": "https://extensions.andesine.app/extensions/andesine/github/0.1.0/frontend.js",
+      "sha256": "fdb7356a1930485b01279acebb95ba87f6fade811e12cb82a2ebd618723e33bf",
+      "size": 79284
+    },
+    "styles": {
+      "url": "https://extensions.andesine.app/extensions/andesine/github/0.1.0/styles.css",
+      "sha256": "ebef47d4a256fd85afe564b8e22780f9c58c26892224393cf591663dfe29e6e7",
+      "size": 5127
+    },
+    "icons": {
+      "url": "https://extensions.andesine.app/extensions/andesine/github/0.1.0/icons.css",
+      "sha256": "774fd6c0926e9ecef017a1f289107a6079a49637c7325afcc03a32a4a88e7cd9",
+      "size": 3959
+    }
+  },
+  "publishedAt": "2026-10-27T21:48:10.315Z"
+}
