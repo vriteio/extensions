@@ -22,7 +22,7 @@
     "node": ">=22.12.0"
   },
   "dependencies": {
-    "@andesine/converters": "0.8.0",
+    "@andesine/converters": "0.8.1",
     "@andesine/extensions": "0.8.0",
     "@andesine/sdk": "0.8.0",
     "lexorank": "^1.0.5",

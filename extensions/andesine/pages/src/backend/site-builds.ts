@@ -247,7 +247,7 @@ class SiteBuilds extends DurableObject<Env> {
     // Nothing to build yet, e.g. settings saved before the first publish, which builds it.
     if (!loaded || !published) return;
 
-    const { site, customDomains, poweredBy, client } = loaded;
+    const { site, customDomains, poweredBy } = loaded;
 
     const record: BuildRecord = {
       id: `bld_${crypto.randomUUID().replace(/-/g, "")}`,

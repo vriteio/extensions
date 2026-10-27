@@ -22,7 +22,7 @@ the collection of the source, add the origin of the site, e.g.
 `https://docs.example.com`, and allow AI answers if the site uses them. Then set the
 key on the source:
 
-```ts
+```ts title="andesine.config.ts"
 sources: [{ id: "docs", type: "andesine", collection: "coll_...", publicKey: "adn_pk_..." }];
 ```
 
@@ -59,7 +59,7 @@ npm uninstall @astrojs/node
 npm install @astrojs/vercel
 ```
 
-```ts
+```ts title="astro.config.ts"
 import vercel from "@astrojs/vercel";
 
 export default defineConfig({
@@ -93,7 +93,7 @@ npm install --save-dev wrangler
 
 Build the pages with Node.js, so that social images can use the native renderer:
 
-```ts
+```ts title="astro.config.ts"
 import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
@@ -106,7 +106,7 @@ export default defineConfig({
 
 Add a `wrangler.jsonc` with the name of the Worker:
 
-```jsonc
+```jsonc title="wrangler.jsonc"
 {
   "name": "docs",
   "compatibility_date": "2026-09-25"

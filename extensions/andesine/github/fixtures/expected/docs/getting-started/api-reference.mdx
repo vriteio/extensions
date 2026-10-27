@@ -8,7 +8,7 @@ An OpenAPI source reads an OpenAPI 3.0 or 3.1 spec at build time, and makes a
 reference section from it. The template has an example spec in
 `src/api/openapi.yaml`, in the **API reference** tab.
 
-```ts
+```ts title="andesine.config.ts"
 sections: [
   { id: "guides", label: "Guides", sources: ["docs"] },
   { id: "reference", label: "API reference", sources: ["api"] }

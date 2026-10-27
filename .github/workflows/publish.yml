@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  ANDESINE_CLI_VERSION: 0.5.0
+  ANDESINE_CLI_VERSION: 0.8.0
   SITE_URL: https://extensions.andesine.app
 
 jobs:
