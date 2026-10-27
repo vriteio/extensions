@@ -1,0 +1,8 @@
+{
+  "printWidth": 100,
+  "useTabs": false,
+  "arrowParens": "always",
+  "quoteProps": "consistent",
+  "endOfLine": "lf",
+  "trailingComma": "none"
+}

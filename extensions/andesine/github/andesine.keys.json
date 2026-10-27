@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "kid": "key-2026-10-12",
+      "kty": "OKP",
+      "alg": "EdDSA",
+      "crv": "Ed25519",
+      "x": "ZxVaWMo7t4k0vOzQvUu1kWfZBYv64pv0gcb2MxFrj8w"
+    }
+  ],
+  "revokedKeys": []
+}

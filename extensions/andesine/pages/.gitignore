@@ -1,0 +1,17 @@
+node_modules
+dist
+.andesine
+.env
+.dev.vars
+.wrangler
+
+# Private keys, e.g. a GitHub App's
+*.pem
+
+# Local notes, plans and agent overrides
+TODO.md
+NOTES.md
+/AGENTS.override.md
+/CLAUDE.local.md
+*_PLAN.md
+/notes/

@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Serves the sites: `*.andesine.page` and custom domains (Cloudflare for SaaS; their CNAME
+  // points to sites.andesine.page, the zone's fallback origin).
+  "name": "andesine-sites",
+  "main": "src/sites/index.ts",
+  "compatibility_date": "2026-09-25",
+  "routes": [{ "pattern": "*/*", "zone_name": "andesine.page" }],
+  "kv_namespaces": [{ "binding": "HOSTS", "id": "00000000000000000000000000000000" }],
+  "r2_buckets": [{ "binding": "SITES", "bucket_name": "andesine-sites" }],
+  "env": {
+    // `npm run sites`: without the route, wrangler dev keeps the request's host name, which
+    // otherwise becomes the route's zone.
+    "dev": {
+      "routes": [],
+      "kv_namespaces": [{ "binding": "HOSTS", "id": "00000000000000000000000000000000" }],
+      "r2_buckets": [{ "binding": "SITES", "bucket_name": "andesine-sites" }]
+    }
+  }
+}

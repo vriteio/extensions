@@ -1,0 +1,46 @@
+{
+  "name": "andesine-github",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "andesine extensions build",
+    "dev": "node scripts/dev.mjs",
+    "tunnel": "node scripts/dev.mjs --tunnel",
+    "backend": "wrangler dev --port 8787",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p src/backend",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix && prettier --write .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run typecheck && npm run lint && npm run format:check",
+    "check:sync": "tsx scripts/check-sync.ts"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "@andesine/converters": "0.8.0",
+    "@andesine/extensions": "0.8.0",
+    "@andesine/sdk": "0.8.0",
+    "lexorank": "^1.0.5",
+    "solid-js": "^1.9.14",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260901.0",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "26.1.2",
+    "andesine": "0.8.0",
+    "eslint": "^10.8.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.9.0",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.5",
+    "typescript": "6.0.3",
+    "typescript-eslint": "^8.66.0",
+    "wrangler": "^4.40.0"
+  }
+}

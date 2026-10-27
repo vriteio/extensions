@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "andesine-github",
+  "main": "src/backend/index.ts",
+  "compatibility_date": "2026-09-25",
+  "routes": [{ "pattern": "github.extensions.andesine.app", "custom_domain": true }],
+  "vars": {
+    "ANDESINE_INSTANCES": "https://api.andesine.app",
+    "GITHUB_APP_ID": "",
+    "GITHUB_APP_SLUG": "andesine",
+    "GITHUB_CLIENT_ID": ""
+  },
+  // Create it with `npx wrangler kv namespace create INSTALLATIONS` and put its ID here.
+  "kv_namespaces": [{ "binding": "INSTALLATIONS", "id": "00000000000000000000000000000000" }],
+  "durable_objects": {
+    "bindings": [{ "name": "REPOSITORIES", "class_name": "RepositorySync" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RepositorySync"] }]
+}

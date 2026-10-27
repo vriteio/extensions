@@ -1,0 +1,46 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "andesine-pages",
+  "main": "src/backend/index.ts",
+  "compatibility_date": "2026-09-25",
+  "routes": [{ "pattern": "pages.extensions.andesine.app", "custom_domain": true }],
+  "vars": {
+    "ANDESINE_INSTANCES": "https://api.andesine.app",
+    "SITES_DOMAIN": "andesine.page",
+    "SITES_FALLBACK_HOST": "sites.andesine.page",
+    // The Cloudflare zone of SITES_DOMAIN, with Cloudflare for SaaS (custom hostnames) on.
+    "CLOUDFLARE_ZONE_ID": ""
+  },
+  // Shared with the sites Worker (wrangler.sites.jsonc). Create the namespace with
+  // `npx wrangler kv namespace create HOSTS` and put its ID in both files.
+  "kv_namespaces": [{ "binding": "HOSTS", "id": "00000000000000000000000000000000" }],
+  "r2_buckets": [{ "binding": "SITES", "bucket_name": "andesine-sites" }],
+  "durable_objects": {
+    "bindings": [
+      { "name": "REGISTRY", "class_name": "SiteRegistry" },
+      { "name": "BUILDS", "class_name": "SiteBuilds" }
+    ]
+  },
+  // One image per supported template version; `getImageName` maps a version to its name.
+  "containers": [
+    {
+      "name": "pages-builder",
+      "class_name": "SiteBuilds",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "template-0-7-0": {
+          "dockerfile": "./container/Dockerfile",
+          "build_vars": { "TEMPLATE_VERSION": "0.7.0" }
+        },
+        "template-0-8-0": {
+          "dockerfile": "./container/Dockerfile",
+          "build_vars": { "TEMPLATE_VERSION": "0.8.0" }
+        }
+      }
+    }
+  ],
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["SiteRegistry"] },
+    { "tag": "v2", "new_sqlite_classes": ["SiteBuilds"] }
+  ]
+}
