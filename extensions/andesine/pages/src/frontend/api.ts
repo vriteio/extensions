@@ -1,6 +1,6 @@
 import { createClient } from "@andesine/sdk";
 import { apiFetch, backend, EXTENSION_API_URL } from "@andesine/extensions/solid";
-import type { SiteConfig } from "../backend/site";
+import type { SiteConfig } from "../shared/site-config";
 import type { BuildRecord, BuildStatus, EntryPages, SiteDomain } from "../shared/types";
 
 interface SiteView {

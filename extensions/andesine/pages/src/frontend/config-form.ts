@@ -1,4 +1,4 @@
-import type { SiteConfig } from "../backend/site";
+import type { SiteConfig } from "../shared/site-config";
 
 type FormState = ReturnType<typeof fromConfig>;
 

@@ -12,6 +12,5 @@
     "resolveJsonModule": true,
     "types": ["node"]
   },
-  "include": ["andesine.config.ts", "src", "scripts"],
-  "exclude": ["src/backend"]
+  "include": ["andesine.config.ts", "src", "scripts"]
 }

@@ -6,11 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "andesine extensions build",
-    "dev": "node scripts/dev.mjs",
-    "tunnel": "node scripts/dev.mjs --tunnel",
-    "backend": "wrangler dev --port 8787",
-    "deploy": "wrangler deploy",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p src/backend",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier --write .",
     "format": "prettier --write .",
@@ -30,7 +26,6 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260901.0",
     "@eslint/js": "^10.0.1",
     "@types/node": "26.1.2",
     "andesine": "0.8.0",
@@ -40,7 +35,6 @@
     "prettier": "^3.9.6",
     "tsx": "^4.23.5",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.66.0",
-    "wrangler": "^4.40.0"
+    "typescript-eslint": "^8.66.0"
   }
 }

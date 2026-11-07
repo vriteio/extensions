@@ -36,9 +36,8 @@ file paths, or, for a directory that the site serves, by site paths, e.g. `/imag
   the open one or one around it.
 - `src/sync` — the conversion library: files to and from Andesine content, links, images,
   fragment anchors, and the plans of a push or a publish. It has no network or runtime APIs.
-- `src/backend` — the Cloudflare Worker: the GitHub App, the panel routes (each change is checked
-  for the member with `verifySession` checks), and one Durable Object per repository that runs
-  its syncs one at a time and retries them.
+- The backend (`https://github.extensions.andesine.app`) runs the GitHub App and the syncs with
+  `src/sync`; it is not in this repository.
 - `src/frontend` — the panel, which sums up the sync and links the page, and the page: connect
   GitHub and map the collection (“Setup” and “Mapping settings”), and see the last syncs and
   disable the sync (“Sync details”).
@@ -53,39 +52,3 @@ file paths, or, for a directory that the site serves, by site paths, e.g. `/imag
   and listed on the “Sync details” page.
 - Boolean JSX props are written as `prop={true}`.
 - Images are uploaded as PNG, JPEG, or WebP; other image files are skipped.
-
-## GitHub App
-
-Create a GitHub App (in the organization that owns it):
-
-- **Callback URL:** `https://<backend>/github/setup`, with **Request user authorization (OAuth)
-  during installation** turned on. The callback checks that the person can access the
-  installation, so a link can't connect someone else's installation.
-- **Webhook URL:** `https://<backend>/github/webhooks`, with a webhook secret.
-- **Permissions:** Contents (read and write), Metadata (read). **Events:** Push.
-
-Put its ID, URL name (slug), and client ID in `wrangler.jsonc` (`GITHUB_APP_ID`,
-`GITHUB_APP_SLUG`, `GITHUB_CLIENT_ID`).
-
-## Deploy
-
-1. Create the KV namespace (`npx wrangler kv namespace create INSTALLATIONS`) and put its ID in
-   `wrangler.jsonc`.
-2. Set the secrets with `npx wrangler secret put <name>`: `ANDESINE_EXTENSION_KEY` (the private
-   key from `andesine extensions keys generate`), `GITHUB_APP_PRIVATE_KEY` (PEM),
-   `GITHUB_CLIENT_SECRET`, `GITHUB_WEBHOOK_SECRET`, and `STATE_SECRET` (32 or more random
-   characters; it signs install links and the backend's storage records).
-3. `npm run deploy`.
-
-## Local setup
-
-1. Create a GitHub App for development as above, and put its values in `.env` (from
-   `.env.example`). The private key goes on one line, with `\n` for line breaks.
-2. On the local Andesine stack, enable extensions development (see the `andesine` CLI).
-3. Run `npm run tunnel` in its own terminal, and keep it running. It tunnels to the backend's
-   port and prints the URLs to set as the App's callback and webhook URLs. `TUNNEL_DOMAIN` in
-   `.env` uses a fixed ngrok domain, so the URLs stay the same; without it, a cloudflared quick
-   tunnel gets a new URL on each start of the tunnel.
-4. Run `npm run dev` in another terminal. It runs the extension, waits for the development key,
-   then starts the backend (wrangler dev on port 8787); restart it as needed, the tunnel and the
-   App's URLs stay. With a local build of the CLI, set `ANDESINE_CLI` to its `cli.js`.

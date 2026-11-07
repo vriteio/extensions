@@ -1,5 +1,4 @@
 package-lock.json
-.wrangler/
 .andesine/
 dist/
 fixtures/

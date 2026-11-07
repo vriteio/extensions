@@ -9,7 +9,7 @@ const typescriptFiles = ["**/*.{cts,mts,ts,tsx}"];
 
 export default tseslint.config(
   {
-    ignores: [".andesine/**", ".wrangler/**", "dist/**", "node_modules/**"]
+    ignores: [".andesine/**", "dist/**", "node_modules/**"]
   },
   {
     ...eslint.configs.recommended,

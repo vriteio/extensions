@@ -2,10 +2,8 @@ node_modules
 dist
 .andesine
 .env
-.dev.vars
-.wrangler
 
-# Private keys, e.g. a GitHub App's
+# Private keys
 *.pem
 
 # Local notes, plans and agent overrides

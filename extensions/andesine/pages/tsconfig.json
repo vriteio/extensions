@@ -12,6 +12,5 @@
     "resolveJsonModule": true,
     "types": []
   },
-  "include": ["andesine.config.ts", "src"],
-  "exclude": ["src/backend", "src/sites"]
+  "include": ["andesine.config.ts", "src"]
 }
