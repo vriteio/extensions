@@ -35,7 +35,10 @@ interface DomainItemProps {
   busy: boolean;
   /** The running action of this domain, for its button's spinner. */
   pending: string | null;
+  /** A check that the member started runs. */
+  checking: boolean;
   onAction(action: string, hostname: string | null): Promise<void>;
+  onCheck(): void;
 }
 interface RecordValueProps {
   label: string;
@@ -84,13 +87,20 @@ const RecordValue = (props: RecordValueProps) => (
 /** The DNS records of a domain that isn't active yet, with whether DNS answers with each one. */
 const DomainRecords = (props: Omit<DomainItemProps, "available">) => (
   <Stack gap="medium">
+    {/* While it waits, errors are often from a check before the records resolved. */}
+    {/* While it waits, errors are often from a check before the records resolved. */}
+    <Show when={props.domain.status === "failed" && props.domain.errors.length}>
+      <Callout tone="danger" title="The domain couldn't be verified">
+        <For each={props.domain.errors}>{(error) => <Text>{error}</Text>}</For>
+      </Callout>
+    </Show>
     <Text tone="muted">
       Add these records at your DNS provider; the domain is checked while this page is open.
     </Text>
     <Box
       padding="none"
       background="soft"
-      class="grid grid-cols-[auto_1fr_1.5fr_auto] items-start gap-x-3 gap-y-1 px-3 py-2 [&>*]:min-w-0"
+      class="grid grid-cols-[auto_1fr_1.5fr_auto] items-start gap-x-3 rounded-xl gap-y-1 px-3 py-2 [&>*]:min-w-0"
     >
       <For each={["Type", "Name", "Value", "Status"]}>
         {(heading) => (
@@ -111,14 +121,27 @@ const DomainRecords = (props: Omit<DomainItemProps, "available">) => (
               class="grid justify-items-start [&>*]:col-start-1 [&>*]:row-start-1"
             >
               <Box padding="none" class="invisible">
-                <Badge icon="i-lucide:clock">Not found yet</Badge>
+                <Button
+                  size="small"
+                  icon="i-lucide:refresh-cw"
+                  class="h-6 py-0 !pr-1.5 [&_div]:h-3.5 [&_div]:w-3.5"
+                >
+                  Not found yet
+                </Button>
               </Box>
+              {/* As tall as the badge; a click checks the domains at once. */}
               <Show
                 when={record.found}
                 fallback={
-                  <Badge icon="i-lucide:clock" tone="muted">
+                  <Button
+                    size="small"
+                    icon="i-lucide:refresh-cw"
+                    class="h-6 py-0 !pr-1.5 [&_div]:h-3.5 [&_div]:w-3.5"
+                    loading={props.checking}
+                    onClick={() => props.onCheck()}
+                  >
                     Not found yet
-                  </Badge>
+                  </Button>
                 }
               >
                 <Badge icon="i-lucide:check" tone="success">
@@ -133,10 +156,6 @@ const DomainRecords = (props: Omit<DomainItemProps, "available">) => (
     <Text tone="muted">
       For a root domain (example.com), use your provider's CNAME flattening or ALIAS record.
     </Text>
-    {/* Until the records resolve, Cloudflare's errors only repeat that they're missing. */}
-    <Show when={props.domain.records.every(({ found }) => found)}>
-      <For each={props.domain.errors}>{(error) => <Text tone="danger">{error}</Text>}</For>
-    </Show>
     <Show when={props.canManage && props.domain.validation === "http"}>
       <Text tone="muted">
         Domain behind its own proxy, or a CAA record?{" "}
@@ -265,6 +284,7 @@ const DomainsSection = (props: DomainsSectionProps) => {
   const [adding, setAdding] = createSignal(false);
   // The domain whose action runs; `pending` only names the action.
   const [target, setTarget] = createSignal<string | null>(null);
+  const [checking, setChecking] = createSignal(false);
 
   let startedAt = Date.now();
 
@@ -282,6 +302,13 @@ const DomainsSection = (props: DomainsSectionProps) => {
     if (result) props.status.update({ site: result.site });
 
     setChecks((count) => count + 1);
+  };
+  // A manual check also restarts the automatic checks, e.g. after they stopped.
+  const check = async () => {
+    setChecking(true);
+    startedAt = Date.now();
+    await refresh();
+    setChecking(false);
   };
   const change = async (action: string, hostname: string | null) => {
     setTarget(hostname);
@@ -344,7 +371,9 @@ const DomainsSection = (props: DomainsSectionProps) => {
               canManage={canManage()}
               busy={props.status.busy()}
               pending={target() === domain.hostname ? props.status.pending() : null}
+              checking={checking()}
               onAction={change}
+              onCheck={() => check()}
             />
           )}
         </For>
