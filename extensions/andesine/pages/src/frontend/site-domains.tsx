@@ -1,8 +1,9 @@
 import {
   Badge,
+  Box,
   Button,
   Callout,
-  Code,
+  copyText,
   Dialog,
   IconButton,
   Input,
@@ -10,6 +11,7 @@ import {
   ItemDetails,
   Section,
   Setting,
+  Spinner,
   Stack,
   Text
 } from "@andesine/extensions/solid";
@@ -31,7 +33,13 @@ interface DomainItemProps {
   available: boolean;
   canManage: boolean;
   busy: boolean;
+  /** The running action of this domain, for its button's spinner. */
+  pending: string | null;
   onAction(action: string, hostname: string | null): Promise<void>;
+}
+interface RecordValueProps {
+  label: string;
+  value: string;
 }
 interface AddDomainDialogProps {
   adding: boolean;
@@ -52,52 +60,92 @@ const STATUSES: Record<SiteDomain["status"], StatusBadge> = {
 };
 const NEEDS_PRO: StatusBadge = { label: "Needs Pro", icon: "i-lucide:lock", tone: "muted" };
 
+/** A record's name or value, wrapped anywhere, with a copy button; a hover highlights the value. */
+const RecordValue = (props: RecordValueProps) => (
+  <Stack
+    direction="row"
+    gap="none"
+    align="start"
+    class="-mx-1 rounded-md px-1 @hover:bg-gradient-to-r @hover:from-gray-500/5 @hover:to-transparent"
+  >
+    <Text class="min-w-0 flex-1 font-mono text-xs leading-6 [overflow-wrap:anywhere]">
+      {props.value}
+    </Text>
+    {/* Gray on gray: darker than the ghost button's own hover, so it shows on the table. */}
+    <IconButton
+      icon="i-lucide:copy"
+      label={`Copy ${props.label}`}
+      size="small"
+      class="mt-0.5 rounded-md p-[3px] text-gray-500 @hover:bg-gray-200 focus-visible:bg-gray-200 [&_div]:h-3.5 [&_div]:w-3.5"
+      onClick={() => copyText(props.value)}
+    />
+  </Stack>
+);
 /** The DNS records of a domain that isn't active yet, with whether DNS answers with each one. */
 const DomainRecords = (props: Omit<DomainItemProps, "available">) => (
-  <Stack gap="small">
-    <Text size="sm" tone="muted">
-      Add these records at your DNS provider; the domain is checked while this page is open:
+  <Stack gap="medium">
+    <Text tone="muted">
+      Add these records at your DNS provider; the domain is checked while this page is open.
     </Text>
-    <For each={props.domain.records}>
-      {(record) => (
-        <Stack direction="row" gap="small" align="center">
-          <Text size="xs">
-            <Code>{record.type}</Code> <Code>{record.name}</Code> → <Code>{record.value}</Code>
+    <Box
+      padding="none"
+      background="soft"
+      class="grid grid-cols-[auto_1fr_1.5fr_auto] items-start gap-x-3 gap-y-1 px-3 py-2 [&>*]:min-w-0"
+    >
+      <For each={["Type", "Name", "Value", "Status"]}>
+        {(heading) => (
+          <Text size="xs" tone="muted">
+            {heading}
           </Text>
-          <Show
-            when={record.found}
-            fallback={
-              <Badge icon="i-lucide:clock" tone="muted">
-                Not found yet
-              </Badge>
-            }
-          >
-            <Badge icon="i-lucide:check" tone="success">
-              Found
-            </Badge>
-          </Show>
-        </Stack>
-      )}
-    </For>
-    <Text size="xs" tone="muted">
+        )}
+      </For>
+      <For each={props.domain.records}>
+        {(record) => (
+          <>
+            <Text class="font-mono text-xs leading-6">{record.type}</Text>
+            <RecordValue label="name" value={record.name} />
+            <RecordValue label="value" value={record.value} />
+            {/* The widest badge, hidden, in the same cell keeps the column's width as statuses change. */}
+            <Box
+              padding="none"
+              class="grid justify-items-start [&>*]:col-start-1 [&>*]:row-start-1"
+            >
+              <Box padding="none" class="invisible">
+                <Badge icon="i-lucide:clock">Not found yet</Badge>
+              </Box>
+              <Show
+                when={record.found}
+                fallback={
+                  <Badge icon="i-lucide:clock" tone="muted">
+                    Not found yet
+                  </Badge>
+                }
+              >
+                <Badge icon="i-lucide:check" tone="success">
+                  Found
+                </Badge>
+              </Show>
+            </Box>
+          </>
+        )}
+      </For>
+    </Box>
+    <Text tone="muted">
       For a root domain (example.com), use your provider's CNAME flattening or ALIAS record.
     </Text>
     {/* Until the records resolve, Cloudflare's errors only repeat that they're missing. */}
     <Show when={props.domain.records.every(({ found }) => found)}>
-      <For each={props.domain.errors}>
-        {(error) => (
-          <Text size="xs" tone="danger">
-            {error}
-          </Text>
-        )}
-      </For>
+      <For each={props.domain.errors}>{(error) => <Text tone="danger">{error}</Text>}</For>
     </Show>
     <Show when={props.canManage && props.domain.validation === "http"}>
-      <Text size="xs" tone="muted">
+      <Text tone="muted">
         Domain behind its own proxy, or a CAA record?{" "}
+        {/* Inline with the text: its size, without the button's padding. */}
         <Button
           size="small"
           variant="link"
+          class="px-0 py-0"
+          loading={props.pending === "txt-validation"}
           disabled={props.busy}
           onClick={() => props.onAction("txt-validation", props.domain.hostname)}
         >
@@ -122,11 +170,27 @@ const DomainItem = (props: DomainItemProps) => {
       label={props.domain.hostname}
       details={props.domain.primary ? [status().label, "Primary"] : [status().label]}
     >
+      <Show when={props.canManage}>
+        {/* shortcut: IconButton has no loading state in the SDK; add one there when it's released. */}
+        <Show
+          when={props.pending === "remove-domain"}
+          fallback={
+            <IconButton
+              icon="i-lucide:trash-2"
+              label="Remove domain"
+              disabled={props.busy}
+              onClick={() => props.onAction("remove-domain", props.domain.hostname)}
+            />
+          }
+        >
+          <Spinner class="m-1 h-5 w-5 text-gray-400" />
+        </Show>
+      </Show>
       <ItemDetails open={isWaiting()}>
         <Show
           when={isWaiting()}
           fallback={
-            <Text size="sm" tone="muted">
+            <Text tone="muted">
               {props.available
                 ? `Serves the site at https://${props.domain.hostname}`
                 : "Serves the site again after an upgrade to Pro"}
@@ -135,24 +199,15 @@ const DomainItem = (props: DomainItemProps) => {
         >
           <DomainRecords {...props} />
         </Show>
-        <Show when={props.canManage}>
-          <Stack direction="row" gap="small" justify="end">
-            <Show when={canMakePrimary()}>
-              <Button
-                size="small"
-                disabled={props.busy}
-                onClick={() => props.onAction("primary-domain", props.domain.hostname)}
-              >
-                Make primary
-              </Button>
-            </Show>
+        <Show when={props.canManage && canMakePrimary()}>
+          <Stack direction="row">
             <Button
               size="small"
-              variant="danger"
+              loading={props.pending === "primary-domain"}
               disabled={props.busy}
-              onClick={() => props.onAction("remove-domain", props.domain.hostname)}
+              onClick={() => props.onAction("primary-domain", props.domain.hostname)}
             >
-              Remove domain
+              Make primary
             </Button>
           </Stack>
         </Show>
@@ -208,6 +263,8 @@ const DomainsSection = (props: DomainsSectionProps) => {
   // Checks since the last change of the domains; the first one runs at once.
   const [checks, setChecks] = createSignal(0);
   const [adding, setAdding] = createSignal(false);
+  // The domain whose action runs; `pending` only names the action.
+  const [target, setTarget] = createSignal<string | null>(null);
 
   let startedAt = Date.now();
 
@@ -227,9 +284,11 @@ const DomainsSection = (props: DomainsSectionProps) => {
     setChecks((count) => count + 1);
   };
   const change = async (action: string, hostname: string | null) => {
+    setTarget(hostname);
     await props.status.run<{ site: SiteView }>(action, { hostname }, (result) =>
       props.status.update({ site: result.site })
     );
+    setTarget(null);
 
     // A new domain, or new records to add, are checked again from now.
     if (action === "add-domain" || action === "txt-validation") {
@@ -284,6 +343,7 @@ const DomainsSection = (props: DomainsSectionProps) => {
               available={available()}
               canManage={canManage()}
               busy={props.status.busy()}
+              pending={target() === domain.hostname ? props.status.pending() : null}
               onAction={change}
             />
           )}
@@ -295,14 +355,16 @@ const DomainsSection = (props: DomainsSectionProps) => {
           </Callout>
         </Show>
         <Show when={available() && domains().some(({ primary }) => primary)}>
-          <Button
-            size="small"
-            variant="link"
-            disabled={props.status.busy()}
-            onClick={() => change("primary-domain", null)}
-          >
-            Use the andesine.page address as primary
-          </Button>
+          <Stack direction="row">
+            <Button
+              size="small"
+              loading={props.status.pending() === "primary-domain" && target() === null}
+              disabled={props.status.busy()}
+              onClick={() => change("primary-domain", null)}
+            >
+              Use the andesine.page address as primary
+            </Button>
+          </Stack>
         </Show>
       </Stack>
       <Show when={adding()}>
