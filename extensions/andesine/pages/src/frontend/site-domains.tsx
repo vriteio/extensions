@@ -244,7 +244,7 @@ const AddDomainDialog = (props: AddDomainDialogProps) => {
   return (
     <Dialog
       title="Add a domain"
-      description="Then point it to the site with a CNAME record at your DNS provider"
+      description="Then add the CNAME and TXT records it shows at your DNS provider"
       size="small"
       onClose={props.onClose}
     >

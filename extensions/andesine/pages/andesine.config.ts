@@ -29,7 +29,7 @@ const elementView = (id: string, element: string, view: ViewRef<ElementViewProps
 
 export default defineExtension({
   name: "andesine/pages",
-  version: "0.1.4",
+  version: "0.1.5",
   displayName: "Andesine Pages",
   description:
     "Hosts documentation sites for collections, and edits the content components of Andesine Pages sites.",

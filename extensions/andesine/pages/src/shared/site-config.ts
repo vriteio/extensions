@@ -20,9 +20,22 @@ const iconSchema = z
   );
 const colorSchema = z.string().regex(/^#[\da-f]{6}$/i, "Use a hex colour, e.g. #ff3617");
 const textSchema = z.string().trim().min(1).max(100);
-const linkSchema = z
-  .object({ label: textSchema, href: z.string().trim().min(1).max(2000), icon: iconSchema })
-  .strict();
+// Like the template: site paths, entry: links, and http(s), mailto, and tel URLs only.
+const hrefSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(2000)
+  .refine((href) => {
+    try {
+      const { protocol } = new URL(href, "https://example.com");
+
+      return href.startsWith("entry:") || ["http:", "https:", "mailto:", "tel:"].includes(protocol);
+    } catch {
+      return false;
+    }
+  }, "Use a URL, a site path, or an entry: link");
+const linkSchema = z.object({ label: textSchema, href: hrefSchema, icon: iconSchema }).strict();
 const siteConfigSchema = z
   .object({
     name: z.string().trim().min(1).max(60),
