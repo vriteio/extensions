@@ -26,7 +26,8 @@ const fromConfig = (config: SiteConfig) => ({
   socialImage: config.social.image ?? "",
   socialBackground: config.social.background ?? "",
   instructions: config.agents.instructions ?? "",
-  answers: config.answers
+  answers: config.answers,
+  poweredBy: config.poweredBy ?? true
 });
 /** Empty optional fields are left out; the backend checks the rest. */
 const toConfig = (state: FormState): Record<string, unknown> => ({
@@ -55,7 +56,8 @@ const toConfig = (state: FormState): Record<string, unknown> => ({
     image: optional(state.socialImage),
     background: optional(state.socialBackground)
   },
-  answers: state.answers
+  answers: state.answers,
+  poweredBy: state.poweredBy
 });
 
 export { fromConfig, toConfig };

@@ -1,5 +1,6 @@
 import {
   Button,
+  Callout,
   Grid,
   IconPicker,
   ImageInput,
@@ -212,6 +213,24 @@ const NavigationFields = (props: FieldsProps) => {
           collectionID={props.form.site().collectionID}
           onChange={(links) => setForm("socialLinks", links)}
         />
+      </Section>
+      <Section title="Credit">
+        {/* Free sites always show the credit. */}
+        <Setting
+          label="Powered by Andesine Pages"
+          description="A credit at the end of the navigation"
+        >
+          <Checkbox
+            checked={form.poweredBy || !props.form.isPro()}
+            disabled={!props.form.isPro()}
+            onChange={(checked) => setForm("poweredBy", checked)}
+          />
+        </Setting>
+        <Show when={!props.form.isPro()}>
+          <Callout title="Removing the credit needs the Pro plan">
+            Upgrade the workspace to turn off the credit on its sites.
+          </Callout>
+        </Show>
       </Section>
     </>
   );

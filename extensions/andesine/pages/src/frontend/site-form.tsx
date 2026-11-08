@@ -23,6 +23,8 @@ const createSiteForm = (site: () => SiteView, status: SiteStatus) => {
   const [saving, setSaving] = createSignal(false);
   const [error, setError] = createSignal<string | null>(null);
   const disabled = () => !status.loaded()?.canManage;
+  // Custom domains come with Pro, as the other Pro-only settings.
+  const isPro = () => status.loaded()?.customDomains ?? false;
   // Unsaved when the form's configuration differs from the saved one.
   const isDirty = () => {
     return JSON.stringify(toConfig(form)) !== JSON.stringify(toConfig(fromConfig(site().config)));
@@ -57,6 +59,7 @@ const createSiteForm = (site: () => SiteView, status: SiteStatus) => {
     error,
     setError,
     disabled,
+    isPro,
     isDirty,
     discard,
     save

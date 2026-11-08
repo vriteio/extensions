@@ -64,7 +64,9 @@ const siteConfigSchema = z
       .strict()
       .default({ generate: true }),
     /** AI answers in search; they use the workspace's AI credits. */
-    answers: z.boolean().default(false)
+    answers: z.boolean().default(false),
+    /** The "Powered by Andesine" credit; only Pro sites can turn it off. */
+    poweredBy: z.boolean().default(true)
   })
   .strict();
 

@@ -362,7 +362,10 @@ const DomainsSection = (props: DomainsSectionProps) => {
       <Stack gap="small">
         <For
           each={domains()}
-          fallback={<EmptyState icon="i-lucide:globe" label="No custom domains yet" />}
+          // Without Pro, the callout below takes the place of the empty state.
+          fallback={
+            available() ? <EmptyState icon="i-lucide:globe" label="No custom domains yet" /> : null
+          }
         >
           {(domain) => (
             <DomainItem
