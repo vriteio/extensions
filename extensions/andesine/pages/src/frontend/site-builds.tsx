@@ -15,6 +15,7 @@ import {
 import { For, Show } from "solid-js";
 import { NOTHING_PUBLISHED } from "../shared/constants";
 import type { BuildRecord, BuildStatus } from "./api";
+import { EmptyState } from "./empty-state";
 import { SiteFrame, type SitePageProps } from "./site-frame";
 import type { SiteStatus } from "./site-status";
 
@@ -134,11 +135,14 @@ const SiteBuilds = (props: SiteBuildsProps) => {
       <Show
         when={latest()}
         fallback={
-          <Text size="sm" tone="muted">
-            {props.status?.pending
-              ? "The first build starts soon"
-              : "Builds when you publish to its channel"}
-          </Text>
+          <EmptyState
+            icon="i-lucide:hammer"
+            label={
+              props.status?.pending
+                ? "The first build starts soon"
+                : "Builds when you publish to its channel"
+            }
+          />
         }
       >
         {(build) => <BuildItem build={build()} open={build().status === "failed"} />}
@@ -175,9 +179,12 @@ export const SiteBuildsPage = (props: SitePageProps) => (
           <Show
             when={builds().length}
             fallback={
-              <Text size="sm" tone="muted">
-                {status.loaded()?.builds?.pending ? "The first build starts soon" : "Not built yet"}
-              </Text>
+              <EmptyState
+                icon="i-lucide:hammer"
+                label={
+                  status.loaded()?.builds?.pending ? "The first build starts soon" : "Not built yet"
+                }
+              />
             }
           >
             <Stack gap="none" class="gap-0.5">

@@ -5,6 +5,8 @@ interface DNSRecord {
   type: "CNAME" | "TXT";
   name: string;
   value: string;
+  /** Whether DNS answers with the record yet; checked while the domain waits. */
+  found?: boolean;
 }
 interface SiteDomain {
   hostname: string;
@@ -14,6 +16,8 @@ interface SiteDomain {
   errors: string[];
   /** The canonical URL of the site: its sitemap and links use it. */
   primary: boolean;
+  /** How the certificate is validated: `http` needs only the CNAME, `txt` adds TXT records. */
+  validation?: DomainValidation;
 }
 interface BuildRecord {
   id: string;
@@ -41,6 +45,15 @@ interface EntryPages {
   pages: Record<string, string>;
 }
 
+type DomainValidation = "http" | "txt";
 type BuildTrigger = "created" | "settings" | "template" | "publish" | "rebuild";
 
-export type { DNSRecord, SiteDomain, BuildRecord, BuildStatus, EntryPages, BuildTrigger };
+export type {
+  DNSRecord,
+  SiteDomain,
+  BuildRecord,
+  BuildStatus,
+  EntryPages,
+  DomainValidation,
+  BuildTrigger
+};
