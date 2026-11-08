@@ -21,9 +21,8 @@
     "@andesine/converters": "0.8.1",
     "@andesine/extensions": "0.8.0",
     "@andesine/sdk": "0.8.0",
-    "lexorank": "^1.0.5",
-    "solid-js": "^1.9.14",
-    "zod": "4.4.3"
+    "solid-js": "^1.9.18",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
