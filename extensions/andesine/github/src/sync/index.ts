@@ -1,6 +1,13 @@
 export { importFile } from "./import";
 export { exportEntry } from "./export";
 export { parseSidecar, serializeSidecar } from "./sidecar";
+export {
+  NAVIGATION_FILE,
+  getNavigationPath,
+  planNavigation,
+  serializeNavigationFile,
+  parseNavigationFile
+} from "./navigation";
 export { flattenTree, planPush, planPublish, createPathLookup, getEntryPath } from "./plan";
 export {
   SIDECAR_PATH,
@@ -19,3 +26,4 @@ export { CONNECTION_KEY, MAPPING_KEY_PREFIX, getMappingKey, getStateKey } from "
 export { sha256 } from "./blocks";
 export type * from "./types";
 export type * from "./plan";
+export type * from "./navigation";

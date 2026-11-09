@@ -9,12 +9,21 @@ import { join, relative } from "node:path";
 import type { ContentNode } from "@andesine/converters";
 import { fromMDX } from "@andesine/converters/mdx";
 import {
+  createPathLookup,
   exportEntry,
   getFileLocation,
+  getNavigationPath,
   importFile,
+  parseNavigationFile,
+  parseSidecar,
+  planNavigation,
+  planPush,
+  serializeNavigationFile,
+  serializeSidecar,
   type ImportedFile,
   type Mapping,
-  type SidecarFile
+  type SidecarFile,
+  type SyncState
 } from "../src/sync";
 import { getImageReference, resolveImageReference } from "../src/sync/paths";
 
@@ -33,6 +42,7 @@ const mapping: Mapping = {
   imageURLPrefix: "",
   imageFormat: "original",
   linkStyle: "site",
+  navigationFiles: "meta.json",
   include: [],
   exclude: []
 };
@@ -292,6 +302,88 @@ report(
   "image: URL prefix read back",
   resolveImageReference("docs/guides/setup.mdx", servedReference, servedMapping) ===
     "public/images/diagram.png"
+);
+
+// Navigation files list each folder's children in the explorer's order and read back the same.
+const folderIDs = new Map([
+  ["customization", "col_1"],
+  ["getting-started", "col_2"]
+]);
+const lookup = createPathLookup(
+  { entries: {}, collections: Object.fromEntries(folderIDs) } as SyncState,
+  []
+);
+const navigation = planNavigation(
+  {
+    rootID: mapping.collectionID,
+    rootName: "Docs",
+    entries: files.map((path, index) => {
+      const folder = getFileLocation(path.slice("docs/".length)).folder;
+
+      return {
+        id: entryIDs.get(path)!,
+        name: path,
+        slugPath: slugPaths.get(entryIDs.get(path)!)!,
+        versionID: "ver",
+        collectionID: folderIDs.get(folder) ?? mapping.collectionID,
+        position: index + 1
+      };
+    }),
+    collections: [...folderIDs].map(([folder, id], index) => {
+      return {
+        id,
+        name: folder.replace("-", " "),
+        parentID: mapping.collectionID,
+        position: index + 1
+      };
+    })
+  },
+  lookup,
+  new Map([...entryIDs].map(([path, id]) => [id, path])),
+  mapping
+);
+
+for (const folder of navigation) {
+  const path = getNavigationPath(mapping, folder.folder);
+  const content = serializeNavigationFile(folder);
+  const expectedPath = join(EXPECTED, path);
+
+  if (write) await writeFile(expectedPath, content);
+
+  const expected = await readFile(expectedPath, "utf8").catch(() => "");
+
+  report(`${path}: navigation file`, content === expected, diff(expected, content));
+  report(
+    `${path}: navigation file read back`,
+    JSON.stringify(parseNavigationFile(content, folder.folder)) === JSON.stringify(folder)
+  );
+}
+
+report("navigation: invalid file", parseNavigationFile('{"pages": [1]}', "") === null);
+report(
+  "navigation: changed file in a push",
+  planPush(
+    [{ path: "docs/customization/meta.json", status: "modified" }],
+    mapping
+  ).navigation?.join() === "customization"
+);
+report(
+  "navigation: ignored when off",
+  !planPush([{ path: "docs/meta.json", status: "added" }], { ...mapping, navigationFiles: "none" })
+    .navigation?.length
+);
+
+const sidecarFolders = Object.fromEntries(navigation.map(({ folder, pages }) => [folder, pages]));
+const sidecarContent = serializeSidecar({ version: 1, files: {}, folders: sidecarFolders });
+
+report(
+  "sidecar: folder order read back",
+  serializeSidecar(parseSidecar(sidecarContent)) === sidecarContent,
+  sidecarContent
+);
+report(
+  "sidecar: invalid folder order dropped",
+  !Object.keys(parseSidecar('{"version":1,"files":{},"folders":{"a":"b"}}').folders).length
 );
 
 console.log(failures ? `\n${failures} failed` : "\nAll checks passed");

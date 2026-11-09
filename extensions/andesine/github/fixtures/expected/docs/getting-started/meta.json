@@ -1,0 +1,10 @@
+{
+  "title": "getting started",
+  "pages": [
+    "writing-pages",
+    "deployment",
+    "configuration",
+    "components",
+    "api-reference"
+  ]
+}

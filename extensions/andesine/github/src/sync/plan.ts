@@ -1,4 +1,5 @@
 import { toContentSlug } from "@andesine/sdk/slug";
+import { getNavigationFolder } from "./navigation";
 import { getFileLocation, getMappedPath, getRelativeFilePath, joinPath } from "./paths";
 import type { FileChange, Mapping, SyncState } from "./types";
 
@@ -30,6 +31,8 @@ interface PushPlan {
   upserts: string[];
   removals: string[];
   renames: Array<{ from: string; to: string }>;
+  /** Folders whose navigation file was added or changed; null for all folders. */
+  navigation: string[] | null;
 }
 interface PublishPlan {
   changed: PublishedEntry[];
@@ -79,11 +82,17 @@ const flattenTree = (
 };
 /** Repository changes that the mapping syncs, by mapped-directory path. */
 const planPush = (changes: FileChange[], mapping: Mapping): PushPlan => {
-  const plan: PushPlan = { upserts: [], removals: [], renames: [] };
+  const navigation: string[] = [];
+  const plan: PushPlan = { upserts: [], removals: [], renames: [], navigation };
 
   for (const change of changes) {
     const path = getMappedPath(change.path, mapping);
     const previous = change.previousPath ? getMappedPath(change.previousPath, mapping) : null;
+    const navigationFolder = getNavigationFolder(change.path, mapping);
+
+    if (navigationFolder !== null && change.status !== "removed") {
+      navigation.push(navigationFolder);
+    }
 
     if (change.status === "removed") {
       if (path) plan.removals.push(path);

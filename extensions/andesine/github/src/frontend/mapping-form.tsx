@@ -45,6 +45,7 @@ const fromMapping = (mapping: Mapping | null) => ({
   imageURLPrefix: mapping?.imageURLPrefix ?? "",
   imageFormat: mapping?.imageFormat ?? "original",
   linkStyle: mapping?.linkStyle ?? "file",
+  navigationFiles: mapping?.navigationFiles ?? "none",
   include: (mapping?.include ?? DEFAULT_INCLUDE).join("\n"),
   exclude: (mapping?.exclude ?? DEFAULT_EXCLUDE).join("\n")
 });
@@ -60,6 +61,7 @@ const toMappingInput = (draft: MappingDraft): MappingInput => ({
     draft.imageLocation === "directory" && draft.imageLinks === "site" ? draft.imageURLPrefix : "",
   imageFormat: draft.imageFormat,
   linkStyle: draft.linkStyle,
+  navigationFiles: draft.navigationFiles,
   include: toLines(draft.include),
   exclude: toLines(draft.exclude)
 });
@@ -257,6 +259,18 @@ const MappingForm = (props: MappingFormProps) => {
               { value: "site", label: "Site URLs (../setup/)" }
             ]}
             onChange={(value) => setDraft("linkStyle", value as MappingInput["linkStyle"])}
+          />
+        </Setting>
+        <Setting label="Navigation files" description="Files with each folder's title and order">
+          <Select
+            value={draft.navigationFiles}
+            options={[
+              { value: "none", label: "None" },
+              { value: "meta.json", label: "meta.json (Fumadocs, Andesine Pages)" }
+            ]}
+            onChange={(value) => {
+              setDraft("navigationFiles", value as MappingInput["navigationFiles"]);
+            }}
           />
         </Setting>
         <Setting label="Include" description="Glob patterns in the directory, one per line" />

@@ -16,7 +16,7 @@ const View = viewRefs<Views>();
 
 export default defineExtension({
   name: "andesine/github",
-  version: "0.1.1",
+  version: "0.2.0",
   displayName: "GitHub Sync",
   description:
     "Syncs a collection with Markdown or MDX files in a GitHub repository, through a publishing channel.",

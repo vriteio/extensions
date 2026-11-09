@@ -1,14 +1,18 @@
+import { isNameList } from "./navigation";
 import type { Sidecar, SidecarFile } from "./types";
 
-const createSidecar = (): Sidecar => ({ version: 1, files: {} });
+const createSidecar = (): Sidecar => ({ version: 1, files: {}, folders: {} });
 /** A missing or invalid sidecar is empty: files then import without restored anchors. */
 const parseSidecar = (content: string | null): Sidecar => {
   try {
     const parsed = content ? (JSON.parse(content) as Partial<Sidecar>) : null;
     const isValid = parsed?.version === 1 && typeof parsed.files === "object" && parsed.files;
+    const folders = Object.fromEntries(
+      Object.entries(parsed?.folders ?? {}).filter(([, names]) => isNameList(names))
+    );
 
     return isValid
-      ? { version: 1, files: parsed.files as Record<string, SidecarFile> }
+      ? { version: 1, files: parsed.files as Record<string, SidecarFile>, folders }
       : createSidecar();
   } catch {
     return createSidecar();
@@ -21,8 +25,11 @@ const serializeSidecar = (sidecar: Sidecar): string => {
       .filter(([, file]) => Object.keys(file).length)
       .sort(([first], [second]) => first.localeCompare(second))
   );
+  const folders = Object.fromEntries(
+    Object.entries(sidecar.folders).sort(([first], [second]) => first.localeCompare(second))
+  );
 
-  return `${JSON.stringify({ version: 1, files }, null, 2)}\n`;
+  return `${JSON.stringify({ version: 1, files, folders }, null, 2)}\n`;
 };
 
 export { createSidecar, parseSidecar, serializeSidecar };

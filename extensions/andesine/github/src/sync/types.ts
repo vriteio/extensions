@@ -17,6 +17,8 @@ interface Mapping {
   /** Exported images in their upload's format (PNG or JPEG), or as WebP. */
   imageFormat: "original" | "webp";
   linkStyle: "file" | "site";
+  /** Per-folder files with the folder's title and child order, e.g. Fumadocs `meta.json`. */
+  navigationFiles: "none" | "meta.json";
   include: string[];
   exclude: string[];
 }
@@ -73,6 +75,8 @@ interface SkippedFile {
 interface Sidecar {
   version: 1;
   files: Record<string, SidecarFile>;
+  /** Mapped directory-relative folder path → its child file stems and folder names, in order. */
+  folders: Record<string, string[]>;
 }
 interface SidecarFile {
   fragments?: FragmentAnchor[];
