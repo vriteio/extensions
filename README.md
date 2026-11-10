@@ -1,7 +1,9 @@
 # Andesine extensions
 
-The registry of Andesine extensions. Each extension's source lives in this repository; CI builds
-reviewed commits and publishes the registry that Andesine instances read:
+The registry of [Andesine](https://andesine.app) extensions. To build an extension, see
+[Build extensions](https://andesine.app/docs/extensions/build-extensions/). Each extension's
+source lives in this repository; CI builds reviewed commits and publishes the registry that
+Andesine instances read:
 
 - Registry index: `https://extensions.andesine.app/index.json` (the instance setting
   `EXTENSIONS_REGISTRY_URL`)
@@ -70,11 +72,3 @@ Add a record to `registry/revocations.json`:
 
 Instances move installations to the replacement, or disable them when there is none. Publish
 the replacement version before or with the revocation.
-
-## Setup
-
-- GitHub Pages: source "GitHub Actions", custom domain `extensions.andesine.app` (DNS `CNAME`
-  to `vriteio.github.io`), HTTPS enforced.
-- The `gh-pages` branch keeps every published file; CI creates it on the first publish. Do not
-  edit it by hand.
-- `ANDESINE_CLI_VERSION` in the workflows pins the CLI that checks and builds the registry.
