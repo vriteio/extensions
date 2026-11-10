@@ -11,6 +11,7 @@ import { fromMDX } from "@andesine/converters/mdx";
 import {
   createPathLookup,
   exportEntry,
+  getEntryPath,
   getFileLocation,
   getNavigationPath,
   importFile,
@@ -384,6 +385,41 @@ report(
 report(
   "sidecar: invalid folder order dropped",
   !Object.keys(parseSidecar('{"version":1,"files":{},"folders":{"a":"b"}}').folders).length
+);
+
+// A synced file keeps its name after a rename, unless the rename changes its `index` role.
+const pathLookup = createPathLookup(
+  {
+    entries: {
+      "docs/getting-started/index.mdx": "ent_intro",
+      "docs/getting-started/setup.md": "ent_setup",
+      "docs/getting-started/overview.mdx": "ent_overview"
+    },
+    collections: { "getting-started": "col_2" }
+  } as unknown as SyncState,
+  []
+);
+const pathEntry = (id: string, name: string) => {
+  return { id, name, slugPath: "", versionID: "ver", collectionID: "col_2", position: 1 };
+};
+const entryPath = (id: string, name: string) => {
+  return getEntryPath(pathEntry(id, name), pathLookup, mapping);
+};
+
+report(
+  "path: index renamed leaves the index file",
+  entryPath("ent_intro", "Introduction") === "docs/getting-started/introduction.mdx",
+  entryPath("ent_intro", "Introduction")
+);
+report("path: index kept", entryPath("ent_intro", "index") === "docs/getting-started/index.mdx");
+report(
+  "path: renamed file keeps its name and extension",
+  entryPath("ent_setup", "Installation") === "docs/getting-started/setup.md"
+);
+report(
+  "path: renamed to index becomes the index file",
+  entryPath("ent_overview", "index") === "docs/getting-started/index.mdx",
+  entryPath("ent_overview", "index")
 );
 
 console.log(failures ? `\n${failures} failed` : "\nAll checks passed");

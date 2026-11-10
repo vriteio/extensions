@@ -151,14 +151,16 @@ const createPathLookup = (state: SyncState, collections: PublishedCollection[]):
 };
 /**
  * The repository path of an entry's file. A synced file keeps its name, also after a rename in
- * Andesine, and moves only when its entry moved to another collection.
+ * Andesine, and moves only when its entry moved to another collection. A rename to or from `index`
+ * changes the file, as it changes whether the page is its folder's landing page.
  */
 const getEntryPath = (entry: PublishedEntry, lookup: PathLookup, mapping: Mapping): string => {
   const known = lookup.entryPaths.get(entry.id);
   const folder = lookup.getFolder(entry.collectionID);
+  const isIndex = entry.name === "index";
+  const location = known ? getFileLocation(getRelativeFilePath(mapping, known)) : null;
 
-  if (known) {
-    const location = getFileLocation(getRelativeFilePath(mapping, known));
+  if (known && location?.isIndex === isIndex) {
     const isSameFolder = location.folder === folder;
 
     return isSameFolder
@@ -166,9 +168,9 @@ const getEntryPath = (entry: PublishedEntry, lookup: PathLookup, mapping: Mappin
       : joinPath(mapping.directory, folder, `${location.stem}.${location.extension}`);
   }
 
-  const stem = entry.name === "index" ? "index" : toContentSlug(entry.name, entry.id);
+  const stem = isIndex ? "index" : toContentSlug(entry.name, entry.id);
 
-  return joinPath(mapping.directory, folder, `${stem}.${mapping.format}`);
+  return joinPath(mapping.directory, folder, `${stem}.${location?.extension ?? mapping.format}`);
 };
 
 export { flattenTree, planPush, planPublish, createPathLookup, getEntryPath };
