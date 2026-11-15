@@ -294,6 +294,12 @@ const ContentFields = (props: FieldsProps) => {
         >
           <Checkbox checked={form.answers} onChange={(checked) => setForm("answers", checked)} />
         </Setting>
+        <Setting
+          label="Browser agent tools"
+          description="Lets AI agents in the browser search and read the site, with WebMCP"
+        >
+          <Checkbox checked={form.webmcp} onChange={(checked) => setForm("webmcp", checked)} />
+        </Setting>
         <Setting label="Instructions for agents" description="In the Markdown pages and llms.txt" />
         <Textarea
           value={form.instructions}

@@ -26,6 +26,7 @@ const fromConfig = (config: SiteConfig) => ({
   socialImage: config.social.image ?? "",
   socialBackground: config.social.background ?? "",
   instructions: config.agents.instructions ?? "",
+  webmcp: config.agents.webmcp,
   answers: config.answers,
   poweredBy: config.poweredBy ?? true
 });
@@ -50,7 +51,7 @@ const toConfig = (state: FormState): Record<string, unknown> => ({
   },
   socialLinks: state.socialLinks,
   pageActions: state.pageActions && { openIn: state.openIn },
-  agents: { instructions: optional(state.instructions) },
+  agents: { instructions: optional(state.instructions), webmcp: state.webmcp },
   social: {
     generate: state.socialGenerate,
     image: optional(state.socialImage),

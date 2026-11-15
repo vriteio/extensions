@@ -65,9 +65,13 @@ const siteConfigSchema = z
       ])
       .default({ openIn: ["chatgpt", "claude"] }),
     agents: z
-      .object({ instructions: z.string().trim().min(1).max(4000).optional() })
+      .object({
+        instructions: z.string().trim().min(1).max(4000).optional(),
+        /** Tools for in-browser AI agents (WebMCP). */
+        webmcp: z.boolean().default(true)
+      })
       .strict()
-      .default({}),
+      .default({ webmcp: true }),
     social: z
       .object({
         image: imageSchema.optional(),
