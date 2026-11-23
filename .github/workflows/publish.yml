@@ -26,8 +26,8 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
       - name: Fetch the published registry
@@ -59,7 +59,9 @@ jobs:
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -m "Publish ${GITHUB_SHA}"
           git push origin HEAD:gh-pages
-      - uses: actions/upload-pages-artifact@v3
+      # v4 and later leave out dotfiles unless asked; the site needs `.nojekyll`.
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: published
-      - uses: actions/deploy-pages@v4
+          include-hidden-files: true
+      - uses: actions/deploy-pages@v5
