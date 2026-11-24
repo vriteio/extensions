@@ -58,6 +58,9 @@ const DROP_CLASSES = {
     "pointer-events-none absolute inset-x-0 bottom-0 h-0 rounded-none border-b border-dashed border-primary"
   ]
 };
+// A scrollbar on the header's background.
+const SCROLLBAR_CLASS =
+  "[&::-webkit-scrollbar]:bg-transparent [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-padding";
 const UNSELECTED_CLASS =
   "text-gray-500 hover:bg-transparent hover:text-gray-700 focus-visible:bg-transparent focus-visible:text-gray-700";
 
@@ -67,8 +70,9 @@ const TabBar = (props: TabBarProps) => (
     direction="row"
     gap="small"
     class={clsx(
-      "relative h-9 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gray-200 after:content-empty",
-      props.variant === "content" ? "bg-gray-100" : "pl-1.5 pr-1"
+      "relative after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gray-200 after:content-empty",
+      // Content tabs grow by a scrollbar's height, so it keeps their padding.
+      props.variant === "content" ? "min-h-9 bg-gray-100" : "h-9 pl-1.5 pr-1"
     )}
   >
     {/*
@@ -81,8 +85,12 @@ const TabBar = (props: TabBarProps) => (
       gap="small"
       align="center"
       class={clsx(
-        "relative z-1 min-w-0 flex-1 self-stretch overflow-x-auto pb-px text-gray-500",
-        props.variant === "content" ? "px-1" : "-mb-px"
+        "relative z-1 min-w-0 flex-1 self-stretch overflow-x-auto text-gray-500",
+        SCROLLBAR_CLASS,
+        // The content header is gray, so its scrollbar thumb is darker.
+        props.variant === "content"
+          ? "px-1 py-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200"
+          : "-mb-px pb-px"
       )}
     >
       {/* By index: the buttons stay while their flags change; a drag needs its source. */}
