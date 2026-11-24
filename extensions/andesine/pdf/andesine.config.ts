@@ -16,13 +16,18 @@ const View = viewRefs<Views>();
 
 export default defineExtension({
   name: "andesine/pdf",
-  version: "0.1.0",
+  version: "0.1.1",
   displayName: "PDF Export",
   description: "Exports an entry, or a whole collection, as a PDF document.",
   icon: "i-pdf:logo?bg",
   apiVersion: 1,
   // The backend reads the draft or a channel's copy; it writes nothing to Andesine.
-  permissions: ["read:entries", "read:collections", "read:publishing"],
+  permissions: [
+    "read:entries",
+    "read:collections",
+    "read:publishing",
+    "read:restricted_collections"
+  ],
   backend: {
     url: "https://pdf.extensions.andesine.app",
     keys: backendKeys.keys as BackendKeys

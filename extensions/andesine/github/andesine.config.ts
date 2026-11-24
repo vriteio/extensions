@@ -16,13 +16,20 @@ const View = viewRefs<Views>();
 
 export default defineExtension({
   name: "andesine/github",
-  version: "0.2.0",
+  version: "0.2.1",
   displayName: "GitHub Sync",
   description:
     "Syncs a collection with Markdown or MDX files in a GitHub repository, through a publishing channel.",
   icon: "i-github-sync:logo?bg",
   apiVersion: 1,
-  permissions: ["entries", "collections", "versions", "read:publishing", "publishing"],
+  permissions: [
+    "entries",
+    "collections",
+    "versions",
+    "read:publishing",
+    "publishing",
+    "read:restricted_collections"
+  ],
   // The panel links to repositories and opens the GitHub App's install page.
   requests: ["https://github.com"],
   backend: {

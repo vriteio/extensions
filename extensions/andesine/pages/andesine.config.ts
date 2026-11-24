@@ -36,7 +36,13 @@ export default defineExtension({
   icon: "i-pages:logo?bg",
   apiVersion: 1,
   // Sites read published content with a publishable key that the backend manages per site.
-  permissions: ["read:collections", "read:publishing", "publishable-keys", "ai-answers"],
+  permissions: [
+    "read:collections",
+    "read:restricted_collections",
+    "read:publishing",
+    "publishable-keys",
+    "ai-answers"
+  ],
   backend: {
     url: "https://pages.extensions.andesine.app",
     keys: backendKeys.keys as BackendKeys
