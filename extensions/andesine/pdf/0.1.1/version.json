@@ -1,0 +1,70 @@
+{
+  "manifest": {
+    "name": "andesine/pdf",
+    "version": "0.1.1",
+    "displayName": "PDF Export",
+    "description": "Exports an entry, or a whole collection, as a PDF document.",
+    "icon": "i-pdf:logo?bg",
+    "apiVersion": 1,
+    "permissions": [
+      "read:entries",
+      "read:collections",
+      "read:publishing",
+      "read:restricted_collections"
+    ],
+    "requests": [],
+    "backend": {
+      "url": "https://pdf.extensions.andesine.app",
+      "keys": [
+        {
+          "kid": "key-2026-11-23",
+          "kty": "OKP",
+          "alg": "EdDSA",
+          "crv": "Ed25519",
+          "x": "b9wlBiWXe-sm2zhC1eKoOQ9YdelHZ7iBzGO2IJMTMK8"
+        }
+      ]
+    },
+    "webhooks": {},
+    "elementViews": [],
+    "blockActions": [],
+    "panels": [
+      {
+        "id": "export",
+        "name": "Export PDF",
+        "icon": "i-tabler:file-type-pdf",
+        "side": "right",
+        "context": "entry",
+        "view": "ExportPanel"
+      }
+    ],
+    "pages": [
+      {
+        "id": "exports",
+        "name": "Exports history",
+        "icon": "i-tabler:file-type-pdf",
+        "context": "entry",
+        "view": "ExportsPage"
+      }
+    ]
+  },
+  "sourceCommit": "b34e2f98e29eb7b44ad3b9f36d9d9343cdb08b58",
+  "artifacts": {
+    "frontend": {
+      "url": "https://extensions.andesine.app/extensions/andesine/pdf/0.1.1/frontend.js",
+      "sha256": "425162afca257c5c4c2434b49a68b696782d465a8e8f69325b963232fbfa92ba",
+      "size": 66068
+    },
+    "styles": {
+      "url": "https://extensions.andesine.app/extensions/andesine/pdf/0.1.1/styles.css",
+      "sha256": "7ba9187c6f237ff5cfa0935f2832f9b33eadb524b7db40201c14ba618da38d50",
+      "size": 3110
+    },
+    "icons": {
+      "url": "https://extensions.andesine.app/extensions/andesine/pdf/0.1.1/icons.css",
+      "sha256": "899a50527c030d00b02860cab6ed5d6e89e0f8be75900d6afdd666519bf5e9b4",
+      "size": 1473
+    }
+  },
+  "publishedAt": "2026-11-24T12:18:39.577Z"
+}
